@@ -1,0 +1,39 @@
+# MODES catalogue API Apache directives
+
+# Load using:
+#	# MODES catalogue viewer
+#	Include /path/to/modes-catalogue-api/.httpd.conf.extract
+#	Use MacroModesCatalogueApi /catalogue "/path/to/site/:/path/to/modes-catalogue-api/:/path/to/php/libraries/:/path/to/php-externallibraries/"
+
+
+<Macro MacroModesCatalogueApi $baseUrl $includePath>
+	
+	# Include path
+	<LocationMatch $baseUrl>
+		php_value include_path "$includePath"
+	</LocationMatch>
+	
+	# Front controller application support
+	Use MacroFrontControllerApplication "$baseUrl/" "Catalogue API"
+	
+	## Application routing:
+	
+	# Record importing
+	RewriteRule ^$baseUrl/import/ $baseUrl/index.html?action=import [L,QSA]
+	RewriteRule ^$baseUrl/import$ $baseUrl/import/ [L,R]
+	<LocationMatch ^$baseUrl/import/>
+		php_value max_execution_time 300
+		php_value memory_limit -1
+		AuthType Ucam-WebAuth
+		AADescription "Record importing"
+		Require valid-user
+	</LocationMatch>
+	
+	# High memory required for import upload
+	<Location $baseUrl/import/>
+		php_value upload_max_filesize 1000M
+		php_value post_max_size 1000M
+		php_value memory_limit 1000M
+	</Location>
+	
+</Macro>

@@ -1,0 +1,14 @@
+<?php
+
+# Define the settings
+$settings = array (
+	'hostname' => 'localhost',
+	'username' => 'my_username',
+	'password' => 'my_password',
+);
+
+# Load and run the MODES catalogue API class
+require_once ('modes-catalogue-api/modesCatalogueApi.php');
+new modesCatalogueApi ($settings);
+
+?>
