@@ -484,6 +484,13 @@ class modesCatalogueApi extends frontControllerApplication
 		# Delete collections-level entries for this grouping, whatever their status, from the main records table
 		$constraints = array ('Type' => 'collection', 'grouping' => $grouping);
 		$this->databaseConnection->delete ($this->settings['database'], $table, $constraints);
+		
+		# Update URLs
+		#!# Need to have monikers in the Collection-level record somewhere, rather than using id directly
+		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET id = 'flags' WHERE id = 'flg';");
+		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET id = 'inuitart' WHERE id = 'inua';");
+		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET id = 'kamchatka' WHERE id = 'kam';");
+		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET id = 'scrimshaw' WHERE id = 'scrim';");
 	}
 	
 	
