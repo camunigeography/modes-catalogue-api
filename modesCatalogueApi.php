@@ -444,6 +444,8 @@ class modesCatalogueApi extends frontControllerApplication
 		$query = "UPDATE {$this->settings['database']}.{$table} SET Collection = CONCAT('{$this->settings['multiplesDelimiter']}', Collection, '{$this->settings['multiplesDelimiter']}') WHERE Collection IS NOT NULL;";
 		$this->databaseConnection->query ($query);
 		
+		#!# Need to copy configuration table to collections explicitly - code currently assumes data is present
+		
 		# Create a title for museum records which have no actual title (i.e. things that aren't artistic), using the ObjectType as the nearest equivalent
 		$query = "UPDATE {$this->settings['database']}.{$table} SET Title = ObjectType WHERE Title IS NULL AND grouping = 'museum';";
 		$this->databaseConnection->query ($query);
@@ -456,6 +458,8 @@ class modesCatalogueApi extends frontControllerApplication
 				/* INT field, so a-b will be discarded */	id_suffix = REPLACE(SUBSTRING(SUBSTRING_INDEX(id, ' ', 2), LENGTH(SUBSTRING_INDEX(id, ' ', 2 -1)) + 1), ' ', '')	/* See: https://blog.fedecarg.com/2009/02/22/mysql-split-string-function/ */
 			;";
 		$this->databaseConnection->query ($query);
+		
+		#!# Change precendence to superimpose local AFTER modes
 		
 		# Clear out any present entries from a previous import
 		$constraints = array ('source' => 'modes', 'grouping' => $grouping);
