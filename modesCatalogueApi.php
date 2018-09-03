@@ -444,7 +444,7 @@ class modesCatalogueApi extends frontControllerApplication
 		$constraints = array ('source' => 'modes', 'grouping' => $grouping);
 		$this->databaseConnection->delete ($this->settings['database'], 'collections', $constraints);
 		
-		# Add collections-level entries into the collections table
+		# Add collections-level entries for this grouping into the collections table
 		#!# Status=R: There are 6 different /Administration/Progress/Keyword currently A,B,H,P,R,Y - we currently use R and P; the others need to be documented; Collections are aware of this as of 180524
 		$query = "INSERT INTO {$this->settings['database']}.collections
 			(
@@ -473,6 +473,7 @@ class modesCatalogueApi extends frontControllerApplication
 				WHERE
 					    Type = 'collection'
 					AND (`Status` != 'R' OR `Status` IS NULL)
+					AND grouping = '{$grouping}'
 				ORDER BY title
 			)
 		;";
