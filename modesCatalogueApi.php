@@ -1,5 +1,27 @@
 <?php
 
+#!# Images on left side of search results may not be triggering the thumbnailer - check
+
+#!# Somewhere in galleryHtmlFromArticleData is where the gallery image subfolder will need to be prepended when it comes from a configuration
+
+
+/* 
+TODO:
+	Uppercase in URL still at: /temporary/pictures/catalogue/article/p51.8.A179/
+	Autolinking article numbers in text, e.g. /museum/catalogue/scrimshaw/about.html
+	Crosslinking in related records
+	profiles in W:\data\spripictures\Museum Catalogue\Profiles
+	Advanced search
+		Search on: Item, Name, Desc + brief desc, Material, Category
+		Checkbox for complete/partial-delimed/undelimited
+			Item number for exact search
+		Show only those with images box
+			Both types of no-image can be considered the same thing
+		Sort by: Title, ID, Category, Material
+			Two boxes if possible
+*/
+
+
 # Class to present the museum catalogue online
 require_once ('frontControllerApplication.php');
 class modesCatalogueApi extends frontControllerApplication
