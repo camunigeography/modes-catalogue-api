@@ -334,6 +334,7 @@ class modesCatalogueApi extends frontControllerApplication
 		#!# Migrate functions to using PHP 5.3 callback system: https://stackoverflow.com/a/3409450
 		
 		# Parse the XML records
+		#!# multiplesDelimiter is being compounded, e.g. ||||||||||||||KAM|||||||||||||| gets extra | either side during import each time
 		require_once ('xml.php');
 		$result = xml::databaseChunking (
 			$modesXmlExportFile,
