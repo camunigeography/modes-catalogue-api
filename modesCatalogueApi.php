@@ -520,6 +520,10 @@ class modesCatalogueApi extends frontControllerApplication
 				/* INT field, so a-b will be discarded */	id_suffix = REPLACE(SUBSTRING(SUBSTRING_INDEX(id, ' ', 2), LENGTH(SUBSTRING_INDEX(id, ' ', 2 -1)) + 1), ' ', '')	/* See: https://blog.fedecarg.com/2009/02/22/mysql-split-string-function/ */
 			;";
 		$this->databaseConnection->query ($query);
+		
+		# Delete empty images
+		$query = "UPDATE {$this->settings['database']}.{$this->settings['table']} SET PhotographFilename = NULL WHERE PhotographFilename IN('.tif', '-master.tif') AND grouping = '{$grouping}';";
+		$this->databaseConnection->query ($query);
 	}
 	
 	
