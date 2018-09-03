@@ -244,7 +244,8 @@ class modesCatalogueApi extends frontControllerApplication
 			}
 			
 			# Compile the HTML
-			$html = '<img src="' . $galleryImage . '" alt="Cover image" title="' . htmlspecialchars ($title) . '" width="' . $width . '" height="' . $height . '" />';
+			#!# Should not be compiling an HTML tag in the API end
+			$html = '<img src="' . $galleryImage . '" alt="Cover image" title="' . htmlspecialchars ($title) . '" width="' . $width . '" height="' . $height . '" class="shadow" />';
 			
 		} /* else {
 			#!# Replace with link instead
