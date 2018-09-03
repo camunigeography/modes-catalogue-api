@@ -372,7 +372,8 @@ class modesCatalogueApi extends frontControllerApplication
 		if ($isGroupingSpecific) {
 			$this->importBiographiesExpeditionsFixups ($grouping, $table);
 		} else {
-			$this->importMainRecordsFixups ($grouping, $table);
+			$this->importCollectionLevelRecords ($grouping);
+			$this->importMainRecordsFixups ($grouping);
 		}
 		
 		# Confirm the result
@@ -437,27 +438,10 @@ class modesCatalogueApi extends frontControllerApplication
 	}
 	
 	
-	# Function to perform fixups for the main record grouping
-	private function importMainRecordsFixups ($grouping, $table)
+	# Function to handle the creation of the collections table from the Collection-level records
+	private function importCollectionLevelRecords ($grouping)
 	{
-		# Normalise the Collection column such that all collections are surrounded by |...| even if only one
-		$query = "UPDATE {$this->settings['database']}.{$table} SET Collection = CONCAT('{$this->settings['multiplesDelimiter']}', Collection, '{$this->settings['multiplesDelimiter']}') WHERE Collection IS NOT NULL;";
-		$this->databaseConnection->query ($query);
-		
 		#!# Need to copy configuration table to collections explicitly - code currently assumes data is present
-		
-		# Create a title for museum records which have no actual title (i.e. things that aren't artistic), using the ObjectType as the nearest equivalent
-		$query = "UPDATE {$this->settings['database']}.{$table} SET Title = ObjectType WHERE Title IS NULL AND grouping = 'museum';";
-		$this->databaseConnection->query ($query);
-		
-		# Create two indexes for sortability reasons; see https://lists.mysql.com/mysql/213354
-		$query = "UPDATE
-			{$this->settings['database']}.{$table}
-			SET
-				/* VARCHAR field */							id_prefix = SUBSTRING_INDEX(id, ' ', 1),
-				/* INT field, so a-b will be discarded */	id_suffix = REPLACE(SUBSTRING(SUBSTRING_INDEX(id, ' ', 2), LENGTH(SUBSTRING_INDEX(id, ' ', 2 -1)) + 1), ' ', '')	/* See: https://blog.fedecarg.com/2009/02/22/mysql-split-string-function/ */
-			;";
-		$this->databaseConnection->query ($query);
 		
 		#!# Change precendence to superimpose local AFTER modes
 		
@@ -491,7 +475,7 @@ class modesCatalogueApi extends frontControllerApplication
 					1 AS disableArtists,
 						/* Convert the imagesSubfolder reference from Windows to UNIX: prepend the path, convert to unix, chop off the Windows equivalent of the path, and add the thumbnails directory */
 					REPLACE (REPLACE (CONCAT (PhotographFilename, '/'), '\\\\', '/'), 'X:/spripictures/', '/thumbnails/') AS imagesSubfolder
-				FROM {$this->settings['database']}.{$table}
+				FROM {$this->settings['database']}.{$this->settings['table']}
 				WHERE
 					    Type = 'collection'
 					AND (`Status` != 'R' OR `Status` IS NULL)
@@ -513,6 +497,29 @@ class modesCatalogueApi extends frontControllerApplication
 		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET id = 'inuitart' WHERE id = 'inua';");
 		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET id = 'kamchatka' WHERE id = 'kam';");
 		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET id = 'scrimshaw' WHERE id = 'scrim';");
+	}
+	
+	
+	# Function to perform fixups for the main record grouping
+	private function importMainRecordsFixups ($grouping)
+	{
+		# Normalise the Collection column such that all collections are surrounded by |...| even if only one
+		$query = "UPDATE {$this->settings['database']}.{$this->settings['table']} SET Collection = CONCAT('{$this->settings['multiplesDelimiter']}', Collection, '{$this->settings['multiplesDelimiter']}') WHERE Collection IS NOT NULL;";
+		$this->databaseConnection->query ($query);
+		
+		# Create a title for museum records which have no actual title (i.e. things that aren't artistic), using the ObjectType as the nearest equivalent
+		$query = "UPDATE {$this->settings['database']}.{$this->settings['table']} SET Title = ObjectType WHERE Title IS NULL AND grouping = 'museum';";
+		$this->databaseConnection->query ($query);
+		
+		# Create two indexes for the ID, splitting into prefix and suffix, for sortability reasons; see https://lists.mysql.com/mysql/213354
+		#!# Casting as INT via silent discarding is not necessarily reliable
+		$query = "UPDATE
+			{$this->settings['database']}.{$this->settings['table']}
+			SET
+				/* VARCHAR field */							id_prefix = SUBSTRING_INDEX(id, ' ', 1),
+				/* INT field, so a-b will be discarded */	id_suffix = REPLACE(SUBSTRING(SUBSTRING_INDEX(id, ' ', 2), LENGTH(SUBSTRING_INDEX(id, ' ', 2 -1)) + 1), ' ', '')	/* See: https://blog.fedecarg.com/2009/02/22/mysql-split-string-function/ */
+			;";
+		$this->databaseConnection->query ($query);
 	}
 	
 	
