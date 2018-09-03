@@ -498,9 +498,9 @@ class modesCatalogueApi extends frontControllerApplication
 			application::dumpData ($this->databaseConnection->error ());
 		}
 		
-		# Delete collections-level entries for this grouping, whatever their status, from the main records table
-		$constraints = array ('Type' => 'collection', 'grouping' => $grouping);
-		$this->databaseConnection->delete ($this->settings['database'], $table, $constraints);
+		# Delete from the main records table the collection-level entries (irrespective of their Status value)
+		$constraints = array ('Type' => 'collection');
+		$this->databaseConnection->delete ($this->settings['database'], $this->settings['table'], $constraints);
 		
 		# Update URLs
 		#!# Need to have monikers in the Collection-level record somewhere, rather than using id directly
