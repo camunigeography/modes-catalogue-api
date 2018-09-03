@@ -295,7 +295,7 @@ class modesCatalogueApi extends frontControllerApplication
 		# Start the HTML
 		$html = '';
 		
-		# Determine the grouping and the filename
+		# Determine the grouping; examples: 'museum', 'picturelibrary', etc.
 		reset ($modesXmlExportFiles);
 		$grouping = key ($modesXmlExportFiles);		// i.e. first key
 		
@@ -305,8 +305,9 @@ class modesCatalogueApi extends frontControllerApplication
 		# Get current tables
 		$tables = $this->databaseConnection->getTables ($this->settings['database']);
 		
-		# Determine the table to use; if a grouping-specific table is present, use that, otherwise use the generic records table
-		$table = (in_array ($grouping, $tables) ? $grouping : $this->settings['table']);
+		# Determine the table to use; if a grouping-specific table is present (e.g. biographies), use that, otherwise use the generic records table
+		$isGroupingSpecific = (in_array ($grouping, $tables));	// Only 'biographies' and 'expeditions'
+		$table = ($isGroupingSpecific ? $grouping : $this->settings['table']);
 		
 		# Archive off the previous data (if not already done on the current day)
 		$this->archiveTable ($table, $tables);
@@ -365,8 +366,7 @@ class modesCatalogueApi extends frontControllerApplication
 		$result = $this->databaseConnection->setTableComment ($this->settings['database'], $table, $tableComment);
 		
 		# Perform fixups for the main record grouping
-		#!# Needs generalising
-		if (in_array ($grouping, array ('biographies', 'expeditions'))) {
+		if ($isGroupingSpecific) {
 			$this->importBiographiesExpeditionsFixups ($grouping, $table);
 		} else {
 			$this->importMainRecordsFixups ($grouping, $table);
