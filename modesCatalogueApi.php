@@ -404,6 +404,23 @@ class modesCatalogueApi extends frontControllerApplication
 	}
 	
 	
+	# Function to convert a CSV block to an associative array
+	private function csvToAssociativeArray ($string)
+	{
+		# Determine the Xpaths
+		$array = explode ("\n", trim ($string));
+		$list = array ();
+		foreach ($array as $line) {
+			list ($key, $value) = explode (',', trim ($line), 2);
+			if ($value == 'NULL') {continue;}	// Skip fields marked as 'NULL', i.e. do not apply to this kind of record
+			$list[$key] = $value;
+		}
+		
+		# Return the list
+		return $list;
+	}
+	
+	
 	# Function to perform fixups for the biographies / expeditions records
 	private function importBiographiesExpeditionsFixups ($grouping, $table)
 	{
@@ -491,23 +508,6 @@ class modesCatalogueApi extends frontControllerApplication
 		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET id = 'inuitart' WHERE id = 'inua';");
 		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET id = 'kamchatka' WHERE id = 'kam';");
 		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET id = 'scrimshaw' WHERE id = 'scrim';");
-	}
-	
-	
-	# Function to convert a CSV block to an associative array
-	private function csvToAssociativeArray ($string)
-	{
-		# Determine the Xpaths
-		$array = explode ("\n", trim ($string));
-		$list = array ();
-		foreach ($array as $line) {
-			list ($key, $value) = explode (',', trim ($line), 2);
-			if ($value == 'NULL') {continue;}	// Skip fields marked as 'NULL', i.e. do not apply to this kind of record
-			$list[$key] = $value;
-		}
-		
-		# Return the list
-		return $list;
 	}
 	
 	
