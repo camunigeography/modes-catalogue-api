@@ -298,6 +298,8 @@ class modesCatalogueApi extends frontControllerApplication
 		# Determine the grouping and the filename
 		reset ($modesXmlExportFiles);
 		$grouping = key ($modesXmlExportFiles);		// i.e. first key
+		
+		# Determine the import file; e.g. /path/to/modes-catalogue-api/exports/museum20180801.xml
 		$modesXmlExportFile = $modesXmlExportFiles[$grouping];	// i.e. first value
 		
 		# Get current tables
