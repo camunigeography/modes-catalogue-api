@@ -353,7 +353,8 @@ class modesCatalogueApi extends frontControllerApplication
 		
 		# Add the grouping
 		#!# Ideally this would work using an XPath "string('{$grouping}')" but that seems not to work
-		$query = "UPDATE {$this->settings['database']}.{$table} SET grouping = '{$grouping}' WHERE grouping = '';";
+		#!# Race condition problem if two imports for different groupings run concurrently
+		$query = "UPDATE {$this->settings['database']}.{$table} SET grouping = '{$grouping}' WHERE grouping IS NULL;";
 		$this->databaseConnection->query ($query);
 		
 		# Add to the counter
