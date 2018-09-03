@@ -131,8 +131,17 @@ class modesCatalogueApi extends frontControllerApplication
 	{
 		# Determine prepared statement values
 		$preparedStatementValues = array ();
+		
+		# Deal with the grouping value, e.g. 'museum' or a list like 'museum,art'
+		$groupings = array ();
 		if ($grouping) {
-			$preparedStatementValues['grouping'] = $grouping;
+			if (preg_match ('/^([,a-z]+)$/D', $grouping)) {
+				$groupingsRaw = explode (',', $grouping);
+				foreach ($groupingsRaw as $index => $grouping) {
+					$groupings[":grouping{$index}"] = $grouping;	// e.g. :grouping0 => 'museum', :grouping1 => 'art'
+				}
+				$preparedStatementValues += $groupings;
+			}
 		}
 		
 		# Determine whether to include suppressed items
@@ -148,7 +157,7 @@ class modesCatalogueApi extends frontControllerApplication
 		WHERE
 			1=1
 			" . ($includeSuppressed ? '' : ' AND (suppressed != 1 OR suppressed IS NULL)') . "
-			" . ($grouping ? ' AND grouping = :grouping' : '') . "
+			" . ($groupings ? ' AND grouping IN(' . implode (', ', array_keys ($groupings)) . ')' : '') . "
 		ORDER BY collection
 		;";
 		$collections = $this->databaseConnection->getData ($query, "{$this->settings['database']}.collections", true, $preparedStatementValues);
@@ -896,8 +905,7 @@ class modesCatalogueApi extends frontControllerApplication
 		# Determine the baseUrl
 		$baseUrl = (isSet ($_GET['baseUrl']) ? $_GET['baseUrl'] : false);
 		
-		# Optionally allow a grouping to be specified
-		#!# support multiple e.g. museum,art
+		# Optionally allow a grouping (or groupings, separated by comma) to be specified, e.g. 'museum' or a list like 'museum,art'
 		$grouping = (isSet ($_GET['grouping']) ? $_GET['grouping'] : false);
 		
 		# Get the collections
@@ -1009,8 +1017,8 @@ class modesCatalogueApi extends frontControllerApplication
 		$html .= "\n" . '<p>None.</p>';
 		$html .= "\n" . '<h3 id="parametersoptional">Request parameters - optional</h3>';
 		$html .= "\n" . '<dl class="code">
-			<dt><strong>grouping</strong> <em>string</em></dt>
-				<dd>Filter to the specified grouping, e.g. \'museum\'</dd>
+			<dt><strong>grouping</strong> <em>string, comma-separated a-z values</em></dt>
+				<dd>Filter to the specified grouping or groupings, e.g. \'museum\' or \'museum,art\'.<br />Currently-supported grouping values are: <tt>museum</tt>, <tt>art</tt>, <tt>picturelibrary</tt>.</dd>
 		</dl>';
 		
 		# Response
