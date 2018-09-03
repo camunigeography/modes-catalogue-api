@@ -489,7 +489,7 @@ class modesCatalogueApi extends frontControllerApplication
 					1 AS disableMaterials,
 					1 AS disableArtists,
 						/* Convert the imagesSubfolder reference from Windows to UNIX: prepend the path, convert to unix, chop off the Windows equivalent of the path, and add the thumbnails directory */
-					REPLACE (REPLACE (CONCAT (PhotographFilename, '/'), '\\\\', '/'), 'A:/spripictures/', '/thumbnails/') AS imagesSubfolder
+					REPLACE (REPLACE (CONCAT (PhotographFilename, '/'), '\\\\', '/'), 'X:/spripictures/', '/thumbnails/') AS imagesSubfolder
 				FROM {$this->settings['database']}.{$table}
 				WHERE
 					    Type = 'collection'
