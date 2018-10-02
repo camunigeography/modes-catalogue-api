@@ -948,7 +948,12 @@ class articleModel
 			# Extract the value, unit and optional note
 			$value = $measurementBlock['Reading']['Value'];
 			$unit = $measurementBlock['Reading']['Unit'];
-			$note = (isSet ($measurementBlock['Reading']['Note']) ? ' (' . $measurementBlock['Reading']['Note'] . ')' : '');
+			$note = '';
+			if (isSet ($measurementBlock['Reading']['Note'])) {
+				if (is_string ($measurementBlock['Reading']['Note']) && mb_strlen (trim ($measurementBlock['Reading']['Note']))) {	// #!# /Description/Measurement/Reading/Note sometimes as /Description/Measurement/Reading/Note/[] in /api/article?id=Y%3A+2010%2F10%2F59&collection=? also /article/y2010.10.59/
+					$note = ' (' . $measurementBlock['Reading']['Note'] . ')';	// E.g. used on /article/y2010.10.93/
+				}
+			}
 			
 			# Skip if no value
 			if (!$value) {continue;}
