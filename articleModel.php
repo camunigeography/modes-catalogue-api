@@ -453,8 +453,14 @@ class articleModel
 			# Skip if no keyword
 			if (!isSet ($attributes['Keyword'])) {continue;}
 			
-			# Assign the key and the value
-			$key = (isSet ($attributes['System']) ? $attributes['System'] : '[Unknown system]');
+			# Assign the key
+			if (isSet ($attributes['System'])) {
+				$key = (isSet ($attributes['System']['System']) ? $attributes['System']['System'] : $attributes['System']);	// Deal with cases with a note, e.g. /article/n30.2a-b/ and /api/article?id=N%3A+30%2F2a-b&collection=?
+			} else {
+				$key = '[Unknown system]';
+			}
+			
+			# Assign the value
 			$value = $attributes['Keyword'];
 			
 			# Convert values arranged as array(a,b,c) into (str) a > b > c
