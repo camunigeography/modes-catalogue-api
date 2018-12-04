@@ -920,7 +920,7 @@ class modesCatalogueApi extends frontControllerApplication
 				    Collection LIKE :collectionId
 				AND (Status != 'R' OR Status IS NULL)
 				AND {$field} != ''
-			GROUP BY {$field}
+			GROUP BY {$field}, id
 			ORDER BY id;";
 		$preparedStatementValues = array ('collectionId' => "%|{$collectionId}|%");
 		
