@@ -1579,7 +1579,7 @@ class modesCatalogueApi extends frontControllerApplication
 		$forceId = (isSet ($_GET['forceid']) ? $_GET['forceid'] : false);
 		
 		# Get the data
-		$fields = array ('id', 'name');
+		$fields = array ('id', 'name', 'rank', 'image');
 		$data = $this->getBiographyData ($baseUrl, $collection, false, $fields, $random, $forceId);
 		
 		# Return the data, which will be JSON-encoded

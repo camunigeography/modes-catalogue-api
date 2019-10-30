@@ -833,7 +833,7 @@ class articleModel
 			// $relatedObjects[] = $relatedRecord['Number'] . (isSet ($relatedRecord['Note']) ? "<br />&nbsp;&nbsp;&mdash; Note: {$relatedRecord['Note']}" : '');
 		}
 		
-		# Return the llist
+		# Return the list
 		return $relatedObjects;
 	}
 	
