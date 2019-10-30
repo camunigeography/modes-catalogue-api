@@ -815,14 +815,25 @@ class modesCatalogueApi extends frontControllerApplication
 		
 		# Return the data
 		return $data;
-		
+	}
+	
+	
+	# Function to create a proper identifier from an ID
+	private function monikerFromId ($id)
+	{
+		$replacements = array (
+			' ' => '_',
+			'/' => '.',
+		);
+		return strtr ($id, $replacements);
 	}
 	
 	
 	# Function to create a URL from an ID
 	private function urlFromId ($id, $baseUrl)
 	{
-		return $baseUrl . '/' . str_replace (' ', '_', $id) . '/';
+		$moniker = $this->monikerFromId ($id);
+		return $baseUrl . '/' . $moniker . '/';
 	}
 	
 	
