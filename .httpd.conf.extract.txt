@@ -18,6 +18,13 @@
 	
 	## Application routing:
 	
+	# Image serving
+	RewriteRule ^$baseUrl/(images)/([a-z]+)/size([0-9]+)/(.+)\.jpg$ $baseUrl/index.html?action=$1&namespace=$2&id=$4&size=$3 [L,QSA]
+	<Location $baseUrl/images/>
+		php_value auto_prepend_file none
+		php_value auto_append_file none
+	</Location>
+	
 	# Record importing
 	RewriteRule ^$baseUrl/import/ $baseUrl/index.html?action=import [L,QSA]
 	RewriteRule ^$baseUrl/import$ $baseUrl/import/ [L,R]

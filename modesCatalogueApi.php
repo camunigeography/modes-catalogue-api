@@ -47,6 +47,7 @@ class modesCatalogueApi extends frontControllerApplication
 			'listingThumbnailType' => 'gif',
 			'articleImageClass' => false,
 			'imageFilenameLiberalMatching' => true,	// Allow case-insensitive matches of image names
+			'supportedImageSizes' => array (300, 400),
 			
 			'administratorEmail' => NULL,
 			'multiplesDelimiter' => '|',
@@ -110,13 +111,19 @@ class modesCatalogueApi extends frontControllerApplication
 				'url' => 'feedback.html',
 				'tab' => 'Feedback',
 			),
+			'images' => array (
+				'description' => 'Image thumbnailer',
+				'url' => '/images/%id',
+				'export' => true,
+			),
 		);
 		
 		# Return the actions
 		return $actions;
 	}
-
-
+	
+	
+	
 	# Function to get collection counts
 	private function getCollectionCounts ()
 	{
@@ -719,7 +726,7 @@ class modesCatalogueApi extends frontControllerApplication
 	
 	
 	# Function to get biography data
-	private function getBiographyData ($baseUrl, $collection, $id = false, $fields = array (), $random = false, $forceId = false)
+	private function getBiographyData ($baseUrl, $collection, $id = false, $fields = array (), $imageSize, $random = false, $forceId = false)
 	{
 		# Determine which database function to use
 		$databaseFunction = ($id ? 'selectOne' : 'select');
@@ -757,10 +764,10 @@ class modesCatalogueApi extends frontControllerApplication
 		# Decorate each entry
 		$expeditionsRaw = $this->getExpeditionData (false, false, false, array ('id', 'name'));
 		if ($id) {
-			$data = $this->decorateBiography ($data, $baseUrl, $expeditionsRaw);
+			$data = $this->decorateBiography ($data, $baseUrl, $imageSize, $expeditionsRaw);
 		} else {
 			foreach ($data as $key => $record) {
-				$data[$key] = $this->decorateBiography ($record, $baseUrl, $expeditionsRaw);
+				$data[$key] = $this->decorateBiography ($record, $baseUrl, $imageSize, $expeditionsRaw);
 			}
 		}
 		
@@ -770,13 +777,13 @@ class modesCatalogueApi extends frontControllerApplication
 	
 	
 	# Function to decorate biography data
-	private function decorateBiography ($data, $baseUrl, $expeditionsRaw)
+	private function decorateBiography ($data, $baseUrl, $imageSize, $expeditionsRaw)
 	{
 		# Add image reference
 		//$data['image'] = NULL;
 		
 		# Monikerise the ID
-		$data['id'] = $this->monikerFromId ($data['id']);
+		$data['id'] = $this->monikerFromRecordId ($data['id']);
 		
 		# Explode multiple value types
 		if (isSet ($data['nationality'])) {
@@ -816,13 +823,18 @@ class modesCatalogueApi extends frontControllerApplication
 		# Create a URL
 		$data['link'] = $this->urlFromId ($data['id'], $baseUrl);
 		
+		# Add images
+		if ($data['image']) {
+			$data['image'] = $this->thumbnailLocation ('biographies', $data['id'], $imageSize);
+		}
+		
 		# Return the data
 		return $data;
 	}
 	
 	
-	# Function to create a proper identifier from an ID
-	private function monikerFromId ($id)
+	# Function to create a proper identifier from a record ID
+	private function monikerFromRecordId ($id)
 	{
 		$replacements = array (
 			' ' => '_',
@@ -832,10 +844,21 @@ class modesCatalogueApi extends frontControllerApplication
 	}
 	
 	
+	# Function to determine the record ID from the moniker
+	private function recordIdFromMoniker ($moniker)
+	{
+		$replacements = array (
+			'.' => '/',
+			'_' => ' ',
+		);
+		return strtr ($moniker, $replacements);
+	}
+	
+	
 	# Function to create a URL from an ID
 	private function urlFromId ($id, $baseUrl)
 	{
-		$moniker = $this->monikerFromId ($id);
+		$moniker = $this->monikerFromRecordId ($id);
 		return $baseUrl . '/' . $moniker . '/';
 	}
 	
@@ -1581,9 +1604,12 @@ class modesCatalogueApi extends frontControllerApplication
 		# Obtain a specified number of articles selected at random
 		$forceId = (isSet ($_GET['forceid']) ? $_GET['forceid'] : false);
 		
+		# Image size
+		$imageSize = (isSet ($_GET['imagesize']) && in_array ($_GET['imagesize'], $this->settings['supportedImageSizes']) ? $_GET['imagesize'] : $this->settings['supportedImageSizes'][0]);
+		
 		# Get the data
 		$fields = array ('id', 'name', 'rank', 'image');
-		$data = $this->getBiographyData ($baseUrl, $collection, false, $fields, $random, $forceId);
+		$data = $this->getBiographyData ($baseUrl, $collection, false, $fields, $imageSize, $random, $forceId);
 		
 		# Return the data, which will be JSON-encoded
 		return $data;
@@ -1652,6 +1678,8 @@ class modesCatalogueApi extends frontControllerApplication
 				<dd>The collection identifier</dd>
 			<dt><strong>baseUrl</strong> <em>string</em></dt>
 				<dd>A string which will be prefixed to the URL value</dd>
+			<dt><strong>imagesize</strong> <em>string: ' . implode ('|', $this->settings['supportedImageSizes']) . '</em></dt>
+				<dd>Image size of the returned images</dd>
 			<dt><strong>random</strong> <em>integer</em></dt>
 				<dd>Return only the specified number of images, ordered randomly</dd>
 			<dt><strong>forceid</strong> <em>string</em></dt>
@@ -1694,9 +1722,12 @@ class modesCatalogueApi extends frontControllerApplication
 		# Determine the 'Unknown person' image URL
 		$nullPersonUrl = (isSet ($_GET['nullPersonUrl']) ? $_GET['nullPersonUrl'] : false);
 		
+		# Image size
+		$imageSize = (isSet ($_GET['imagesize']) && in_array ($_GET['imagesize'], $this->settings['supportedImageSizes']) ? $_GET['imagesize'] : $this->settings['supportedImageSizes'][0]);
+		
 		# Get the record data
 		$fields = array ('id', 'name', 'date', 'alias', 'rank', 'nationality', 'awards', 'about', 'data', 'collection', 'image');
-		if (!$data = $this->getBiographyData ($baseUrl, $collection, $_GET['id'], $fields)) {
+		if (!$data = $this->getBiographyData ($baseUrl, $collection, $_GET['id'], $fields, $imageSize)) {
 			return array ('error' => 'There is no such record ID.');
 		}
 		
@@ -1778,6 +1809,8 @@ class modesCatalogueApi extends frontControllerApplication
 		$html .= "\n" . '<dl class="code">
 			<dt><strong>baseUrl</strong> <em>string</em></dt>
 				<dd>A string which will be prefixed to the URL value</dd>
+			<dt><strong>imagesize</strong> <em>string: ' . implode ('|', $this->settings['supportedImageSizes']) . '</em></dt>
+				<dd>Image size of the returned images</dd>
 			<dt><strong>baseUrlExpeditions</strong> <em>string</em></dt>
 				<dd>A string which will be prefixed to the URL value for each expedition</dd>
 		</dl>';
@@ -2263,6 +2296,133 @@ class modesCatalogueApi extends frontControllerApplication
 		# Return the HTML
 		return $html;
 	}
+	
+	
+	# Image thumbnailing
+	public function images ()
+	{
+		# Ensure there is an ID
+		if (!$id = (isSet ($_GET['id']) && strlen ($_GET['id']) ? $_GET['id'] : false)) {
+			echo 'ERROR: No ID supplied.';
+			application::sendHeader (404);
+			return;
+		}
+		
+		# Ensure there is a namespace, and that it is supported
+#		$namespaces = array ('articles', 'biographies', 'expeditions');
+		$namespaces = array ('biographies');
+		if (!$namespace = (isSet ($_GET['namespace']) && in_array ($_GET['namespace'], $namespaces) ? $_GET['namespace'] : false)) {
+			echo 'ERROR: No valid namespace supplied.';
+			application::sendHeader (404);
+			return;
+		}
+		
+		# Get the size
+		if (!$size = (isSet ($_GET['size']) && in_array ($_GET['size'], $this->settings['supportedImageSizes']) ? $_GET['size'] : false)) {
+			echo 'ERROR: No valid size supplied.';
+			application::sendHeader (404);
+			return;
+		}
+		
+		# Load the image library
+		require_once ('image.php');
+		
+		# If the image is already present, serve as-is
+		$thumbnailFile = $this->thumbnailFile ($namespace, $id, $size);
+		if (file_exists ($thumbnailFile)) {
+			image::serve ($thumbnailFile);
+			return;
+		}
+		
+		# Convert the moniker to an ID
+		$recordId = $this->recordIdFromMoniker ($id);
+		
+		# Get the ID from the database
+		$imageString = $this->databaseConnection->selectOneField ($this->settings['database'], $namespace, 'image', array ('id' => $recordId), array ('image'));
+		
+		# End if none
+		if (!$imageString) {
+			echo 'ERROR: No such image.';
+			application::sendHeader (404);
+			return;
+		}
+		
+		# Determine the file location from the database-stored value
+		$location = $this->originalImageFile ($imageString);
+		
+		# Obtain the image height and width when scaled
+		list ($width, $height, $imageType, $imageAttributes) = getimagesize ($location);
+		list ($width, $height) = image::scaledImageDimensions ($width, $height, $size);
+		
+		# Resize the image
+		ini_set ('max_execution_time', 30);
+		image::resize ($location, 'jpg', $width, '', $thumbnailFile, 'watermarkImagick' /* Callback function, below */);
+		
+		# Serve the newly-generated thumbnail image
+		image::serve ($thumbnailFile);
+		return;
+	}
+	
+	
+	# Function to determine the original image location from the database-stored value
+	private function originalImageFile ($imageString, $imageNumber = 0)
+	{
+		# Convert image string to array
+		$images = $this->unpipeList ($imageString);
+		
+		# Take only the first image
+		$file = $images[$imageNumber];
+		
+		# Convert the location (which will be Windows format) to its Unix equivalent
+		$file = str_replace ('\\', '/', $file);
+		$file = preg_replace ('|^X:/spripictures|', $this->settings['imageStoreRoot'], $file);
+		
+		# Return the file path
+		return $file;
+	}
+	
+	
+	# Function to determine the thumbnail file
+	private function thumbnailFile ($namespace, $id, $size = 300)
+	{
+		# Assemble the thumbnail location
+		$thumbnailFile = $_SERVER['DOCUMENT_ROOT'] . $this->thumbnailLocation ($namespace, $id, $size);
+		
+		# Return the path
+		return $thumbnailFile;
+	}
+	
+	
+	# Function to determine the thumbnail location (for use as the URL in the API output)
+	private function thumbnailLocation ($namespace, $id, $size)
+	{
+		# Determine the local directory
+		$thumbnailLocation = $this->baseUrl . '/images/' . $namespace . '/' . 'size' . $size . '/' . $id . '.jpg';
+		
+		# Return the path
+		return $thumbnailLocation;
+	}
 }
+
+
+#!# Move into to class when image::resize is_callable is fixed
+function watermarkImagick (&$imageHandle, $height)
+{
+	# Magickwand implementation
+	if (extension_loaded ('magickwand')) {
+		$textWand = NewDrawingWand ();
+		DrawAnnotation ($textWand, 8, $height - 30, '(c) Scott Polar Research Institute');
+		DrawAnnotation ($textWand, 8, $height - 18, 'www.spri.cam.ac.uk');
+		MagickDrawImage ($imageHandle, $textWand);
+		
+	# ImageMagick implementation
+	} else if (extension_loaded ('imagick')) {
+		$draw = new ImagickDraw ();
+		$draw->annotation (8, $height - 30, '(c) Scott Polar Research Institute');
+		$draw->annotation (8, $height - 18, 'www.spri.cam.ac.uk');
+		$imageHandle->drawImage ($draw);
+	}
+}
+
 
 ?>
