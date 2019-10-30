@@ -726,7 +726,7 @@ class modesCatalogueApi extends frontControllerApplication
 	
 	
 	# Function to get biography data
-	private function getBiographyData ($baseUrl, $collection, $id = false, $fields = array (), $imageSize, $random = false, $forceId = false)
+	private function getBiographyData ($baseUrl, $collection, $id = false, $fields = array (), $imageSize, $baseUrlExpeditions = false, $random = false, $forceId = false)
 	{
 		# Determine which database function to use
 		$databaseFunction = ($id ? 'selectOne' : 'select');
@@ -764,10 +764,10 @@ class modesCatalogueApi extends frontControllerApplication
 		# Decorate each entry
 		$expeditionsRaw = $this->getExpeditionData (false, false, false, array ('id', 'name'));
 		if ($id) {
-			$data = $this->decorateBiography ($data, $baseUrl, $imageSize, $expeditionsRaw);
+			$data = $this->decorateBiography ($data, $baseUrl, $imageSize, $expeditionsRaw, $baseUrlExpeditions);
 		} else {
 			foreach ($data as $key => $record) {
-				$data[$key] = $this->decorateBiography ($record, $baseUrl, $imageSize, $expeditionsRaw);
+				$data[$key] = $this->decorateBiography ($record, $baseUrl, $imageSize, $expeditionsRaw, $baseUrlExpeditions);
 			}
 		}
 		
@@ -777,7 +777,7 @@ class modesCatalogueApi extends frontControllerApplication
 	
 	
 	# Function to decorate biography data
-	private function decorateBiography ($data, $baseUrl, $imageSize, $expeditionsRaw)
+	private function decorateBiography ($data, $baseUrl, $imageSize, $expeditionsRaw, $baseUrlExpeditions)
 	{
 		# Add image reference
 		//$data['image'] = NULL;
@@ -1595,6 +1595,9 @@ class modesCatalogueApi extends frontControllerApplication
 		# Determine the baseUrl
 		$baseUrl = (isSet ($_GET['baseUrl']) ? $_GET['baseUrl'] : false);
 		
+		# Determine the expeditions baseUrl
+		$baseUrlExpeditions = (isSet ($_GET['baseUrlExpeditions']) ? $_GET['baseUrlExpeditions'] : false);
+		
 		# Filter to a specified collection if required
 		$collection = (isSet ($_GET['collection']) && strlen ($_GET['collection']) ? $_GET['collection'] : false);
 		
@@ -1609,7 +1612,7 @@ class modesCatalogueApi extends frontControllerApplication
 		
 		# Get the data
 		$fields = array ('id', 'name', 'rank', 'image');
-		$data = $this->getBiographyData ($baseUrl, $collection, false, $fields, $imageSize, $random, $forceId);
+		$data = $this->getBiographyData ($baseUrl, $collection, false, $fields, $imageSize, $baseUrlExpeditions, $random, $forceId);
 		
 		# Return the data, which will be JSON-encoded
 		return $data;
@@ -1727,7 +1730,7 @@ class modesCatalogueApi extends frontControllerApplication
 		
 		# Get the record data
 		$fields = array ('id', 'name', 'date', 'alias', 'rank', 'nationality', 'awards', 'about', 'data', 'collection', 'image');
-		if (!$data = $this->getBiographyData ($baseUrl, $collection, $_GET['id'], $fields, $imageSize)) {
+		if (!$data = $this->getBiographyData ($baseUrl, $collection, $_GET['id'], $fields, $imageSize, $baseUrlExpeditions)) {
 			return array ('error' => 'There is no such record ID.');
 		}
 		
