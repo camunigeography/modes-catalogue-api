@@ -775,6 +775,9 @@ class modesCatalogueApi extends frontControllerApplication
 		# Add image reference
 		//$data['image'] = NULL;
 		
+		# Monikerise the ID
+		$data['id'] = $this->monikerFromId ($data['id']);
+		
 		# Explode multiple value types
 		if (isSet ($data['nationality'])) {
 			$data['nationality'] = $this->unpipeList ($data['nationality']);
