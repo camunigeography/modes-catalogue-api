@@ -845,12 +845,13 @@ class modesCatalogueApi extends frontControllerApplication
 	
 	
 	# Function to determine the record ID from the moniker
-	private function recordIdFromMoniker ($moniker)
+	private function recordIdFromMoniker ($moniker, $disableDotToSlashConversion)
 	{
-		$replacements = array (
-			'.' => '/',
-			'_' => ' ',
-		);
+		$replacements = array ();
+		$replacements['_'] = ' ';
+		if (!$disableDotToSlashConversion) {
+			$replacements['.'] = '/';
+		}
 		return strtr ($moniker, $replacements);
 	}
 	
@@ -2337,8 +2338,11 @@ class modesCatalogueApi extends frontControllerApplication
 			return;
 		}
 		
+		#!# Hacky workaround
+		$disableDotToSlashConversion = ($namespace == 'biographies');
+		
 		# Convert the moniker to an ID
-		$recordId = $this->recordIdFromMoniker ($id);
+		$recordId = $this->recordIdFromMoniker ($id, $disableDotToSlashConversion);
 		
 		# Get the ID from the database
 		$imageString = $this->databaseConnection->selectOneField ($this->settings['database'], $namespace, 'image', array ('id' => $recordId), array ('image'));
