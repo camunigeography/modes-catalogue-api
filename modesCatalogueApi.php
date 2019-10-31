@@ -1946,14 +1946,19 @@ class modesCatalogueApi extends frontControllerApplication
 		$json = json_encode (simplexml_load_string ($data['data']));
 		$metadata = json_decode ($json, true);
 		
+		# Get all the biographies
+		#!# Need to add support in getBiographyData for getting a list of IDs, to avoid pointless lookup of people not present in the expedition
+		#!# Fields needs to be filterable
+		$allBiographies = $this->getBiographyData ($baseUrlPeople, $collection, false, $fields = array (/* 'link', 'image' */), $imageSize);
+		
 		# Extract people
 		$data['people'] = array ();
 		foreach ($metadata['Association']['Person'] as $person) {
 			$data['people'][] = array (
 				'name' => $person['PersonName'],
 				'role' => $person['Role'],
-				'link' => $this->urlFromId ($person['PersonName'], $baseUrlPeople),
-				'image' => NULL,
+				'link' => $allBiographies[$person['PersonName']]['link'],
+				'image' => $allBiographies[$person['PersonName']]['image'],
 			);
 		}
 		
