@@ -19,7 +19,7 @@
 	## Application routing:
 	
 	# Image serving
-	RewriteRule ^$baseUrl/(images)/([a-z]+)/size([0-9]+)/(.+)\.jpg$ $baseUrl/index.html?action=$1&namespace=$2&id=$4&size=$3 [L,QSA]
+	RewriteRule ^$baseUrl/(images)/([a-z]+)/size([0-9]+)(|square)/(.+)\.jpg$ $baseUrl/index.html?action=$1&namespace=$2&id=$5&size=$3&shape=$4 [L,QSA]
 	<Location $baseUrl/images/>
 		php_value auto_prepend_file none
 		php_value auto_append_file none

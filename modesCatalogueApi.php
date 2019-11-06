@@ -48,6 +48,7 @@ class modesCatalogueApi extends frontControllerApplication
 			'articleImageClass' => false,
 			'imageFilenameLiberalMatching' => true,	// Allow case-insensitive matches of image names
 			'supportedImageSizes' => array (300, 400, 600),
+			'supportedImageShapes' => array ('square'),
 			
 			'administratorEmail' => NULL,
 			'multiplesDelimiter' => '|',
@@ -2333,11 +2334,19 @@ class modesCatalogueApi extends frontControllerApplication
 			return;
 		}
 		
+		# Get the shape
+		$shape = (isSet ($_GET['shape']) ? $_GET['shape'] : false);
+		if ($shape && !in_array ($shape, $this->settings['supportedImageShapes'])) {
+			echo 'ERROR: Invalid shape supplied.';
+			application::sendHeader (404);
+			return;
+		}
+		
 		# Load the image library
 		require_once ('image.php');
 		
 		# If the image is already present, serve as-is
-		$thumbnailFile = $this->thumbnailFile ($namespace, $id, $size);
+		$thumbnailFile = $this->thumbnailFile ($namespace, $id, $size, $shape);
 		if (file_exists ($thumbnailFile)) {
 			image::serve ($thumbnailFile);
 			return;
@@ -2362,13 +2371,30 @@ class modesCatalogueApi extends frontControllerApplication
 		# Determine the file location from the database-stored value
 		$location = $this->originalImageFile ($imageString);
 		
-		# Obtain the image height and width when scaled
-		list ($width, $height, $imageType, $imageAttributes) = getimagesize ($location);
-		list ($width, $height) = image::scaledImageDimensions ($width, $height, $size);
+		# Set the width to be consistent, and the height as auto
+		$newWidth = $size;
+		$newHeight = '';	// Auto
+		
+		# Crop if required to square
+		$cropWidth = false;
+		$cropHeight = false;
+		if ($shape == 'square') {
+			
+			# Cropping needs to ensure both the height and width are at least the size, so the height may need to be set as the dominant instead of defaulting to the width
+			list ($originalWidth, $originalHeight, $imageType, $imageAttributes) = getimagesize ($location);
+			if ($originalWidth > $originalHeight) {
+				$newWidth = '';
+				$newHeight = $size;	// Set the height to dominate
+			}
+			
+			# Set the crop width and height
+			$cropWidth = $size;
+			$cropHeight = $size;
+		}
 		
 		# Resize the image
 		ini_set ('max_execution_time', 30);
-		image::resize ($location, 'jpg', $width, '', $thumbnailFile, 'watermarkImagick' /* Callback function, below */);
+		image::resize ($location, 'jpg', $newWidth, $newHeight, $thumbnailFile, 'watermarkImagick' /* Callback function, below */, true, true, $cropWidth, $cropHeight);
 		
 		# Serve the newly-generated thumbnail image
 		image::serve ($thumbnailFile);
@@ -2395,10 +2421,10 @@ class modesCatalogueApi extends frontControllerApplication
 	
 	
 	# Function to determine the thumbnail file
-	private function thumbnailFile ($namespace, $id, $size = 300)
+	private function thumbnailFile ($namespace, $id, $size = 300, $shape = false)
 	{
 		# Assemble the thumbnail location
-		$thumbnailFile = $_SERVER['DOCUMENT_ROOT'] . $this->thumbnailLocation ($namespace, $id, $size);
+		$thumbnailFile = $_SERVER['DOCUMENT_ROOT'] . $this->thumbnailLocation ($namespace, $id, $size, $shape);
 		
 		# Return the path
 		return $thumbnailFile;
@@ -2406,10 +2432,10 @@ class modesCatalogueApi extends frontControllerApplication
 	
 	
 	# Function to determine the thumbnail location (for use as the URL in the API output)
-	private function thumbnailLocation ($namespace, $id, $size)
+	private function thumbnailLocation ($namespace, $id, $size, $shape = false)
 	{
 		# Determine the local directory
-		$thumbnailLocation = $this->baseUrl . '/images/' . $namespace . '/' . 'size' . $size . '/' . $id . '.jpg';
+		$thumbnailLocation = $this->baseUrl . '/images/' . $namespace . '/' . 'size' . $size . $shape . '/' . $id . '.jpg';
 		
 		# Return the path
 		return $thumbnailLocation;
