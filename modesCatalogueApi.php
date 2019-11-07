@@ -1736,6 +1736,11 @@ class modesCatalogueApi extends frontControllerApplication
 			return array ('error' => 'There is no such record ID.');
 		}
 		
+		# Handle alias
+		$alias = $this->unpipeList ($data['alias']);
+		$alias = array_unique ($alias);
+		$data['alias'] = implode (', ', $alias);
+		
 		# Return the data, which will be JSON-encoded
 		return $data;
 	}
