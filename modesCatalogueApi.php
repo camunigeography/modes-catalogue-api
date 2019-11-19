@@ -826,7 +826,7 @@ class modesCatalogueApi extends frontControllerApplication
 		
 		# Add images
 		if ($data['image']) {
-			$data['image'] = $this->thumbnailLocation ('biographies', $data['id'], $imageSize);
+			$data['image'] = $this->thumbnailLocation ('biographies', $data['moniker'], 1, $imageSize);
 		}
 		
 		# Return the data
@@ -2332,6 +2332,13 @@ class modesCatalogueApi extends frontControllerApplication
 			return;
 		}
 		
+		# Get the index, from 1
+		if (!$index = (isSet ($_GET['index']) && ctype_digit ($_GET['index']) ? $_GET['index'] : false)) {
+			echo 'ERROR: No valid number supplied.';
+			application::sendHeader (404);
+			return;
+		}
+		
 		# Get the size
 		if (!$size = (isSet ($_GET['size']) && in_array ($_GET['size'], $this->settings['supportedImageSizes']) ? $_GET['size'] : false)) {
 			echo 'ERROR: No valid size supplied.';
@@ -2351,7 +2358,7 @@ class modesCatalogueApi extends frontControllerApplication
 		require_once ('image.php');
 		
 		# If the image is already present, serve as-is
-		$thumbnailFile = $this->thumbnailFile ($namespace, $id, $size, $shape);
+		$thumbnailFile = $this->thumbnailFile ($namespace, $id, $index, $size, $shape);
 		if (file_exists ($thumbnailFile)) {
 			image::serve ($thumbnailFile);
 			return;
@@ -2374,7 +2381,7 @@ class modesCatalogueApi extends frontControllerApplication
 		}
 		
 		# Determine the file location from the database-stored value
-		$location = $this->originalImageFile ($imageString);
+		$location = $this->originalImageFile ($imageString, $index);
 		
 		# Set the width to be consistent, and the height as auto
 		$newWidth = $size;
@@ -2408,13 +2415,13 @@ class modesCatalogueApi extends frontControllerApplication
 	
 	
 	# Function to determine the original image location from the database-stored value
-	private function originalImageFile ($imageString, $imageNumber = 0)
+	private function originalImageFile ($imageString, $index /* from 1 */)
 	{
 		# Convert image string to array
 		$images = $this->unpipeList ($imageString);
 		
 		# Take only the first image
-		$file = $images[$imageNumber];
+		$file = $images[ ($index - 1) ];
 		
 		# Convert the location (which will be Windows format) to its Unix equivalent
 		$file = str_replace ('\\', '/', $file);
@@ -2426,10 +2433,10 @@ class modesCatalogueApi extends frontControllerApplication
 	
 	
 	# Function to determine the thumbnail file
-	private function thumbnailFile ($namespace, $id, $size = 300, $shape = false)
+	private function thumbnailFile ($namespace, $id, $index, $size = 300, $shape = false)
 	{
 		# Assemble the thumbnail location
-		$thumbnailFile = $_SERVER['DOCUMENT_ROOT'] . $this->thumbnailLocation ($namespace, $id, $size, $shape);
+		$thumbnailFile = $_SERVER['DOCUMENT_ROOT'] . $this->thumbnailLocation ($namespace, $id, $index, $size, $shape);
 		
 		# Return the path
 		return $thumbnailFile;
@@ -2437,10 +2444,10 @@ class modesCatalogueApi extends frontControllerApplication
 	
 	
 	# Function to determine the thumbnail location (for use as the URL in the API output)
-	private function thumbnailLocation ($namespace, $id, $size, $shape = false)
+	private function thumbnailLocation ($namespace, $id, $index /* from 1 */, $size, $shape = false)
 	{
 		# Determine the local directory
-		$thumbnailLocation = $this->baseUrl . '/images/' . $namespace . '/' . 'size' . $size . $shape . '/' . $id . '.jpg';
+		$thumbnailLocation = $this->baseUrl . '/images/' . $namespace . '/' . 'size' . $size . $shape . '/' . $id . '_' . $index . '.jpg';
 		
 		# Return the path
 		return $thumbnailLocation;
