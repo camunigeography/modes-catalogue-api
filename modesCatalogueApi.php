@@ -1742,6 +1742,9 @@ class modesCatalogueApi extends frontControllerApplication
 		//application::dumpData ($dataXml);
 		$data['rank'] = (isSet ($dataXml['Content']['Person']['Rank']['Rank']) ? $dataXml['Content']['Person']['Rank']['Rank'] : $dataXml['Content']['Person']['Rank']);
 		
+		# Add person title
+		$data['title'] = $dataXml['Content']['Person']['PersonTitle'];
+		
 		# Handle alias
 		$alias = $this->unpipeList ($data['alias']);
 		$alias = array_unique ($alias);
