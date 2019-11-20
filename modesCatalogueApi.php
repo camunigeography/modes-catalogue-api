@@ -1736,6 +1736,12 @@ class modesCatalogueApi extends frontControllerApplication
 			return array ('error' => 'There is no such record ID.');
 		}
 		
+		# Rank is not currently reliable, due to <note> leaf nodes
+		require_once ('xml.php');
+		$dataXml = xml::xml2array ($data['data'], false, $documentToDataOrientatedXml = true, $xmlIsFile = false);
+		//application::dumpData ($dataXml);
+		$data['rank'] = (isSet ($dataXml['Content']['Person']['Rank']['Rank']) ? $dataXml['Content']['Person']['Rank']['Rank'] : $dataXml['Content']['Person']['Rank']);
+		
 		# Handle alias
 		$alias = $this->unpipeList ($data['alias']);
 		$alias = array_unique ($alias);
