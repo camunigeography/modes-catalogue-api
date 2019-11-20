@@ -1961,6 +1961,10 @@ class modesCatalogueApi extends frontControllerApplication
 		$json = json_encode (simplexml_load_string ($data['data']));
 		$metadata = json_decode ($json, true);
 		
+		# Date is not reliable
+		#!# Remove when fixed by MySQL 8 upgrade: https://stackoverflow.com/questions/30090221/mysql-xpath-concatenation-operator-how-to-add-space
+		$data['date'] = $metadata['Content']['Event']['Date']['DateBegin'] . '-' . $metadata['Content']['Event']['Date']['DateEnd'];
+		
 		# Get all the biographies
 		#!# Need to add support in getBiographyData for getting a list of IDs, to avoid pointless lookup of people not present in the expedition
 		#!# Fields needs to be filterable
