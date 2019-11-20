@@ -1039,6 +1039,7 @@ class articleModel
 					'name' => $association[$container][$innerContainer],
 					'dateBegin' => $association['Date']['DateBegin'],
 					'dateEnd' => $association['Date']['DateEnd'],
+					'date' => (($association['Date']['DateBegin'] && $association['Date']['DateEnd']) ? $association['Date']['DateBegin'] . '-' . $association['Date']['DateEnd'] : NULL),
 				);
 			}
 		}
