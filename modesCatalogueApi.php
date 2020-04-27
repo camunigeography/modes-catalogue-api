@@ -219,7 +219,10 @@ class modesCatalogueApi extends frontControllerApplication
 		
 		# Create a collection cover image
 		foreach ($collections as $key => $collection) {
-			$collections[$key]['collectionCoverImage'] = $this->collectionCoverImage ($collection['baseUrl'], $collection['title']);
+			$this->collectionCoverImage ($collection['baseUrl'], $collection['title'], 100, $galleryImage /* returned by reference */, $width /* returned by reference */, $height /* returned by reference */);
+			$collections[$key]['collectionCoverImage_src'] = $galleryImage;
+			$collections[$key]['collectionCoverImage_width'] = $width;
+			$collections[$key]['collectionCoverImage_height'] = $height;
 		}
 		
 		# Default the about page tab text
@@ -242,7 +245,7 @@ class modesCatalogueApi extends frontControllerApplication
 	
 	
 	# Function to provide as the main image for a collection
-	private function collectionCoverImage ($galleryBaseUrl, $title, $desiredBaseWidth = 100)
+	private function collectionCoverImage ($galleryBaseUrl, $title, $desiredBaseWidth = 100, &$galleryImage = false, &$width = false, &$height = false)
 	{
 		# Define the available sizes
 		$sizes = array (
