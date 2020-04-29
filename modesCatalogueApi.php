@@ -838,7 +838,8 @@ class modesCatalogueApi extends frontControllerApplication
 	
 	
 	# Function to create a proper identifier from a record ID
-	private function monikerFromRecordId ($id)
+	#!# Move into articleModel then make private
+	public function monikerFromRecordId ($id)
 	{
 		$replacements = array (
 			' ' => '_',

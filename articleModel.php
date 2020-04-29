@@ -7,6 +7,7 @@ class articleModel
 	#!# Ideally this would be done as a field and dependency definition pattern
 	private $sections = array (
 		'id',
+		'moniker',
 		'type',
 		'status',
 		'collections',
@@ -315,9 +316,16 @@ class articleModel
 	
 	
 	# Function to obtain the ID
-	private function getId ($article, $record)
+	private function getId ($article_ignored, $record)
 	{
 		return $record['id'];
+	}
+	
+	
+	# Function to get the moniker
+	private function getMoniker ($article_ignored, $record)
+	{
+		return $this->modesCatalogueApi->monikerFromRecordId ($record['id']);
 	}
 	
 	
