@@ -2435,7 +2435,7 @@ class modesCatalogueApi extends frontControllerApplication
 		}
 		
 		# Determine the file location from the database-stored value
-		$location = $this->originalImageFile ($imageString, $index);
+		$location = $this->originalImageFile ($imageString, $index, /* Variables needed for workaround for legacy records without path: */ $namespace, $recordId);
 		
 		# Enable watermarking, by defining a callback function, below
 		$watermarkCallback = array ($this, 'watermarkImagick');
@@ -2472,7 +2472,7 @@ class modesCatalogueApi extends frontControllerApplication
 	
 	
 	# Function to determine the original image location from the database-stored value
-	private function originalImageFile ($imageString, $index /* from 1 */)
+	private function originalImageFile ($imageString, $index /* from 1 */, /* Workaround for legacy records without path: */ $namespace, $recordId)
 	{
 		# Convert image string to array
 		$images = $this->unpipeList ($imageString);
@@ -2483,20 +2483,68 @@ class modesCatalogueApi extends frontControllerApplication
 		# Convert the location in Windows format to its Unix equivalent
 		$file = str_replace ('\\', '/', $file);
 		$file = preg_replace ('|^X:/spripictures|', $this->settings['imageStoreRoot'], $file);
+		$tryPaths = array ('');		// Single path to try, with no root to prepend
 		
-		# Try variants of the file extension lower/upper-cased
-		$fileLowercasedExtension = preg_replace ('/.JPG$/', '.jpg', $file);
-		$fileLowercasedExtension = preg_replace ('/.TIF$/', '.tif', $file);
-		$fileUppercasedExtension = preg_replace ('/.jpg$/', '.JPG', $file);
-		$fileUppercasedExtension = preg_replace ('/.tif$/', '.TIF', $file);
-		if (file_exists ($fileLowercasedExtension)) {
-			$file = $fileLowercasedExtension;
-		} else if (file_exists ($fileUppercasedExtension)) {
-			$file = $fileUppercasedExtension;
+		# If the image is from a legacy record which does not have the full path, determine the path based on the collection identifier(s)
+		#!# This can be deleted when all records have a path
+		if (!preg_match ("|^{$this->settings['imageStoreRoot']}|", $file)) {
+			$tryPaths = $this->getImagesSubfolders_legacyRecords ($namespace, $recordId);
+		}
+		
+		# Try each path, both with the original file extension and upper-cased
+		foreach ($tryPaths as $tryPath) {
+			$fileLowercasedExtension = preg_replace ('/.JPG$/', '.jpg', $file);
+			$fileLowercasedExtension = preg_replace ('/.TIF$/', '.tif', $file);
+			$fileUppercasedExtension = preg_replace ('/.jpg$/', '.JPG', $file);
+			$fileUppercasedExtension = preg_replace ('/.tif$/', '.TIF', $file);
+			if (file_exists ($tryPath . $file)) {
+				$file = $tryPath . $file;
+				break;
+			} else if (file_exists ($tryPath . $fileLowercasedExtension)) {
+				$file = $tryPath . $fileLowercasedExtension;
+				break;
+			} else if (file_exists ($tryPath . $fileUppercasedExtension)) {
+				$file = $tryPath . $fileUppercasedExtension;
+				break;
+			}
 		}
 		
 		# Return the file path
 		return $file;
+	}
+	
+	
+	# Function to get the images subfolders
+	private function getImagesSubfolders_legacyRecords ($namespace, $recordId)
+	{
+		# Apply only to the records namespace; end for others
+		if ($namespace != 'records') {
+			return array ();
+		}
+		
+		# Constrain to collections for this record, to encourage exactness of cataloguing, e.g. "|ANTC||ARMC|"
+		$collectionsString = $this->databaseConnection->selectOneField ($this->settings['database'], 'records', 'Collection', array ('id' => $recordId), array ('Collection'));
+		$collections = $this->unpipeList ($collectionsString);
+		$constraint = array ();		// All by default
+		if ($collections) {
+			$constraint['collection'] = $collections;	// List results in IN(..., ..)
+		}
+		
+		# Get the pairs
+		$paths = $this->databaseConnection->selectPairs ($this->settings['database'], 'collections', $constraint, array ('imagesSubfolder'));
+		
+		# Remove thumbnails/ from start
+		foreach ($paths as $index => $path) {
+			$paths[$index] = preg_replace ('|^/thumbnails|', '', $path);
+		}
+		
+		# Add image store root to the start of each
+		foreach ($paths as $index => $path) {
+			$paths[$index] = $this->settings['imageStoreRoot'] . $path;
+		}
+		
+		# Return the data
+		return $paths;
 	}
 	
 	
