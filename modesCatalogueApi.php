@@ -2496,7 +2496,8 @@ class modesCatalogueApi extends frontControllerApplication
 	
 	
 	# Function to determine the thumbnail location (for use as the URL in the API output)
-	private function thumbnailLocation ($namespace, $id, $index /* from 1 */, $size, $shape = false)
+	#!# Move into articleModel then make private
+	public function thumbnailLocation ($namespace, $id, $index /* from 1 */, $size, $shape = false)
 	{
 		# Determine the local directory
 		$thumbnailLocation = $this->baseUrl . '/images/' . $namespace . '/' . 'size' . $size . $shape . '/' . $id . '_' . $index . '.jpg';

@@ -31,6 +31,7 @@ class articleModel
 		'associatedPerson',			// Uses article
 		'associatedOrganisation',	// Uses article
 		'associatedExpedition',		// Uses article
+		'images',
 		'imageFiles',				// Filenames - deprecated
 		'imageBy',					// Uses article
 		'imageColour',				// Uses article
@@ -165,7 +166,7 @@ class articleModel
 		}
 		
 		# Define fields which will appear in the eventual output (not all of these exist in the actual data)
-		$filterToFields = array ('id', 'status', 'imageFiles', 'title', 'collections', 'briefDescription');
+		$filterToFields = array ('id', 'status', 'images', 'imageFiles', 'title', 'collections', 'briefDescription');
 		
 		# Determine the fields to use
 		$fields  = '*';
@@ -1057,8 +1058,29 @@ class articleModel
 	}
 	
 	
+	# Function to create a list of images, as paths
+	private function getImages ($article_ignored, $record)
+	{
+		# Get the filenames
+		$images = $this->getImageFiles ($article_ignored, $record);
+		
+		# Set the size
+		#!# Needs to be configurable, e.g. square300
+		$size = $this->modesCatalogueApi->settings['supportedImageSizes'][0];
+		
+		# Convert to a thumbnail location
+		foreach ($images as $index => $image) {
+			$recordMoniker = $this->getMoniker ($article_ignored, $record);
+			$images[$index] = $this->modesCatalogueApi->thumbnailLocation ('records', $recordMoniker, ($index + 1), $size);
+		}
+		
+		# Return the list
+		return $images;
+	}
+	
+	
 	# Function to create a list of images, as filenames; deprecated
-	private function getImageFiles ($article, $record)
+	private function getImageFiles ($article_ignored, $record)
 	{
 		# End if private
 		if ($record['Status'] == 'P') {return array ();}
