@@ -8,7 +8,7 @@ $settings = array (
 );
 
 # Load and run the MODES catalogue API class
-require_once ('modes-catalogue-api/modesCatalogueApi.php');
+require_once ('modesCatalogueApi.php');
 new modesCatalogueApi ($settings);
 
 ?>
