@@ -2484,6 +2484,17 @@ class modesCatalogueApi extends frontControllerApplication
 		$file = str_replace ('\\', '/', $file);
 		$file = preg_replace ('|^X:/spripictures|', $this->settings['imageStoreRoot'], $file);
 		
+		# Try variants of the file extension lower/upper-cased
+		$fileLowercasedExtension = preg_replace ('/.JPG$/', '.jpg', $file);
+		$fileLowercasedExtension = preg_replace ('/.TIF$/', '.tif', $file);
+		$fileUppercasedExtension = preg_replace ('/.jpg$/', '.JPG', $file);
+		$fileUppercasedExtension = preg_replace ('/.tif$/', '.TIF', $file);
+		if (file_exists ($fileLowercasedExtension)) {
+			$file = $fileLowercasedExtension;
+		} else if (file_exists ($fileUppercasedExtension)) {
+			$file = $fileUppercasedExtension;
+		}
+		
 		# Return the file path
 		return $file;
 	}
