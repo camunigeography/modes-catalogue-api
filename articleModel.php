@@ -30,7 +30,7 @@ class articleModel
 		'associatedPerson',			// Uses article
 		'associatedOrganisation',	// Uses article
 		'associatedExpedition',		// Uses article
-		'images',
+		'imageFiles',				// Filenames - deprecated
 		'imageBy',					// Uses article
 		'imageColour',				// Uses article
 		'navigationIds',
@@ -164,7 +164,7 @@ class articleModel
 		}
 		
 		# Define fields which will appear in the eventual output (not all of these exist in the actual data)
-		$filterToFields = array ('id', 'status', 'images', 'title', 'collections', 'briefDescription');
+		$filterToFields = array ('id', 'status', 'imageFiles', 'title', 'collections', 'briefDescription');
 		
 		# Determine the fields to use
 		$fields  = '*';
@@ -1049,8 +1049,8 @@ class articleModel
 	}
 	
 	
-	# Function to create a list of images
-	private function getImages ($article, $record)
+	# Function to create a list of images, as filenames; deprecated
+	private function getImageFiles ($article, $record)
 	{
 		# End if private
 		if ($record['Status'] == 'P') {return array ();}

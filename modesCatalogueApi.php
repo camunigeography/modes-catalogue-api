@@ -1327,7 +1327,7 @@ class modesCatalogueApi extends frontControllerApplication
             ],
             "title": "Harness",
             "briefDescription": "Harness, dog. Labrador Inuit. Labrador, Newfoundland, Canada, before April, 1938.",
-            "images": [
+            "imageFiles": [
                 "N1.TIF"
             ],
             "link": "/N:_1/"
@@ -1521,7 +1521,7 @@ class modesCatalogueApi extends frontControllerApplication
         }
     },
     "placeName": null,
-    "images": [
+    "imagesFiles": [
         "N_76_a_b.TIF"
     ],
     "imageBy": null,
