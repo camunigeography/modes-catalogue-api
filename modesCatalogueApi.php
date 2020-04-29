@@ -41,6 +41,8 @@ class modesCatalogueApi extends frontControllerApplication
 			# Table
 			'table' => 'records',
 			
+			'organisationName' => NULL,
+			
 			# Images
 			'mainImageSize' => 450,
 			'listingThumbnailSize' => 100,
@@ -2435,6 +2437,9 @@ class modesCatalogueApi extends frontControllerApplication
 		# Determine the file location from the database-stored value
 		$location = $this->originalImageFile ($imageString, $index);
 		
+		# Enable watermarking, by defining a callback function, below
+		$watermarkCallback = array ($this, 'watermarkImagick');
+		
 		# Set the width to be consistent, and the height as auto
 		$newWidth = $size;
 		$newHeight = '';	// Auto
@@ -2458,7 +2463,7 @@ class modesCatalogueApi extends frontControllerApplication
 		
 		# Resize the image
 		ini_set ('max_execution_time', 30);
-		image::resize ($location, 'jpg', $newWidth, $newHeight, $thumbnailFile, 'watermarkImagick' /* Callback function, below */, true, true, $cropWidth, $cropHeight);
+		image::resize ($location, 'jpg', $newWidth, $newHeight, $thumbnailFile, $watermarkCallback, true, true, $cropWidth, $cropHeight);
 		
 		# Serve the newly-generated thumbnail image
 		image::serve ($thumbnailFile);
@@ -2505,25 +2510,25 @@ class modesCatalogueApi extends frontControllerApplication
 		# Return the path
 		return $thumbnailLocation;
 	}
-}
-
-
-#!# Move into to class when image::resize is_callable is fixed
-function watermarkImagick (&$imageHandle, $height)
-{
-	# Magickwand implementation
-	if (extension_loaded ('magickwand')) {
-		$textWand = NewDrawingWand ();
-		DrawAnnotation ($textWand, 8, $height - 30, '(c) Scott Polar Research Institute');
-		DrawAnnotation ($textWand, 8, $height - 18, 'www.spri.cam.ac.uk');
-		MagickDrawImage ($imageHandle, $textWand);
-		
-	# ImageMagick implementation
-	} else if (extension_loaded ('imagick')) {
-		$draw = new ImagickDraw ();
-		$draw->annotation (8, $height - 30, '(c) Scott Polar Research Institute');
-		$draw->annotation (8, $height - 18, 'www.spri.cam.ac.uk');
-		$imageHandle->drawImage ($draw);
+	
+	
+	# Callback from image::resize
+	public function watermarkImagick (&$imageHandle, $height)
+	{
+		# Magickwand implementation
+		if (extension_loaded ('magickwand')) {
+			$textWand = NewDrawingWand ();
+			DrawAnnotation ($textWand, 8, $height - 30, '(c) ' . $this->settings['organisationName']);
+			DrawAnnotation ($textWand, 8, $height - 18, $_SERVER['SERVER_NAME']);
+			MagickDrawImage ($imageHandle, $textWand);
+			
+		# ImageMagick implementation
+		} else if (extension_loaded ('imagick')) {
+			$draw = new ImagickDraw ();
+			$draw->annotation (8, $height - 30, '(c) ' . $this->settings['organisationName']);
+			$draw->annotation (8, $height - 18, $_SERVER['SERVER_NAME']);
+			$imageHandle->drawImage ($draw);
+		}
 	}
 }
 

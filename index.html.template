@@ -5,6 +5,7 @@ $settings = array (
 	'hostname' => 'localhost',
 	'username' => 'my_username',
 	'password' => 'my_password',
+	'organisationName' => 'Widgets Institute',
 );
 
 # Load and run the MODES catalogue API class
