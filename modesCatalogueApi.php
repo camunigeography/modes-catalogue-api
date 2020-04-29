@@ -869,6 +869,41 @@ class modesCatalogueApi extends frontControllerApplication
 	}
 	
 	
+	# Function to convert an article ID to a URL slug
+	#!# Needs to be a pluggable callback
+	private function articleIdToUrlSlug ($string, $isMuseumType, $baseUrl, $asFullUrl = false)
+	{
+		# Lower-case
+		$string = strtolower ($string);
+		
+		# Convert slash to dot
+		$string = str_replace ('/', '.', $string);
+		
+		# Convert to a full URL if necessary
+		if ($asFullUrl) {
+			$string = $baseUrl . '/article/' . $string . '/';
+		}
+		
+		# Return the result
+		return $string;
+	}
+	
+	
+	# Function to convert a URL slug to an article ID
+	#!# Needs to be a pluggable callback
+	private function urlSlugToArticleId ($string, $isMuseumType)
+	{
+		# Convert dot to slash
+		$string = str_replace ('.', '/', $string);
+		
+		# Upper-case
+		$string[0] = strtoupper ($string[0]);
+		
+		# Return the result
+		return $string;
+	}
+	
+	
 	# Function to get expedition data
 	private function getExpeditionData ($baseUrl, $collection, $id = false, $fields = array ())
 	{
