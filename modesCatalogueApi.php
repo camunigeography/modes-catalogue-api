@@ -2477,10 +2477,10 @@ class modesCatalogueApi extends frontControllerApplication
 		# Convert image string to array
 		$images = $this->unpipeList ($imageString);
 		
-		# Take only the first image
+		# Select the image in the set to use
 		$file = $images[ ($index - 1) ];
 		
-		# Convert the location (which will be Windows format) to its Unix equivalent
+		# Convert the location in Windows format to its Unix equivalent
 		$file = str_replace ('\\', '/', $file);
 		$file = preg_replace ('|^X:/spripictures|', $this->settings['imageStoreRoot'], $file);
 		
