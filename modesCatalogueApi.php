@@ -1320,11 +1320,17 @@ class modesCatalogueApi extends frontControllerApplication
 		# Image size
 		$imageSize = (isSet ($_GET['imagesize']) && in_array ($_GET['imagesize'], $this->settings['supportedImageSizes']) ? $_GET['imagesize'] : $this->settings['supportedImageSizes'][0]);
 		
+		# Image shape
+		$imageShape = (isSet ($_GET['imageshape']) ? $_GET['imageshape'] : false);
+		if ($imageShape && !in_array ($imageShape, $this->settings['supportedImageShapes'])) {
+			return array ('error' => 'Invalid shape supplied.');
+		}
+		
 		# Get the data
 		ini_set ('display_errors', false);	// #!# Ensure any errors do not disrupt API output
 		require_once ('articleModel.php');
 		$articleModel = new articleModel ($this, $this->settings, $this->databaseConnection);
-		$data = $articleModel->getArticlesData ($baseUrl, $collection, $imageSize, $search, $category, $material, $artist, $requireImages, $random, $page);
+		$data = $articleModel->getArticlesData ($baseUrl, $collection, $imageSize, $imageShape, $search, $category, $material, $artist, $requireImages, $random, $page);
 		
 		# Construct URLs
 		foreach ($data['articles'] as $id => $article) {
@@ -1389,6 +1395,8 @@ class modesCatalogueApi extends frontControllerApplication
 				<dd>The collection identifier</dd>
 			<dt><strong>imagesize</strong> <em>string: ' . implode ('|', $this->settings['supportedImageSizes']) . '</em></dt>
 				<dd>Image size of the returned images</dd>
+			<dt><strong>imageshape</strong> <em>string: ' . implode ('|', $this->settings['supportedImageShapes']) . '</em> default <em>[no value, i.e. original dimensions]</em></dt>
+				<dd>Image shape of the returned images. If not supplied, the dimensions of the original will be used.</dd>
 			<dt><strong>search</strong> <em>string</em></dt>
 				<dd>A search string, which will be checked as a free text search against various fields</dd>
 			<dt><strong>category</strong> <em>string</em></dt>
@@ -1456,11 +1464,17 @@ class modesCatalogueApi extends frontControllerApplication
 		# Image size
 		$imageSize = (isSet ($_GET['imagesize']) && in_array ($_GET['imagesize'], $this->settings['supportedImageSizes']) ? $_GET['imagesize'] : $this->settings['supportedImageSizes'][0]);
 		
+		# Image shape
+		$imageShape = (isSet ($_GET['imageshape']) ? $_GET['imageshape'] : false);
+		if ($imageShape && !in_array ($imageShape, $this->settings['supportedImageShapes'])) {
+			return array ('error' => 'Invalid shape supplied.');
+		}
+		
 		# Parse the record data
 		ini_set ('display_errors', false);	// #!# Ensure any errors do not disrupt API output
 		require_once ('articleModel.php');
 		$articleModel = new articleModel ($this, $this->settings, $this->databaseConnection);
-		$data = $articleModel->getOne ($_GET['id'], $collectionId, $imageSize, $includeXml);
+		$data = $articleModel->getOne ($_GET['id'], $collectionId, $imageSize, $imageShape, $includeXml);
 		
 		# Get expedition URLs and images
 		#!# Consider whether this block should logically be within articleModel
@@ -1618,6 +1632,8 @@ class modesCatalogueApi extends frontControllerApplication
 				<dd>The collection identifier, which adds contextual information (e.g. IDs of next/previous items in same collection); the special value "?" (signifying auto) can also be used to generate context automatically from the first collection listed in the record if present</dd>
 			<dt><strong>imagesize</strong> <em>string: ' . implode ('|', $this->settings['supportedImageSizes']) . '</em></dt>
 				<dd>Image size of the returned images</dd>
+			<dt><strong>imageshape</strong> <em>string: ' . implode ('|', $this->settings['supportedImageShapes']) . '</em> default <em>[no value, i.e. original dimensions]</em></dt>
+				<dd>Image shape of the returned images. If not supplied, the dimensions of the original will be used.</dd>
 			<dt><strong>baseUrlExpeditions</strong> <em>string</em></dt>
 				<dd>A string which will be prefixed to the URL value for each expedition</dd>
 			<dt><strong>baseUrlPeople</strong> <em>string</em></dt>

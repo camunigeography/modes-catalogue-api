@@ -52,7 +52,7 @@ class articleModel
 	
 	
 	# Getter to return the structured data
-	public function getOne ($id, $collectionId = false, $imageSize = false, $includeXml = false)
+	public function getOne ($id, $collectionId = false, $imageSize = false, $imageShape = false, $includeXml = false)
 	{
 		# Get the data for the article; note that BINARY is used to force case sensitivity
 		$query = "
@@ -71,7 +71,7 @@ class articleModel
 		}
 		
 		# Decorate the record
-		$record = $this->decorateArticle ($record, $collectionId, $imageSize, array (), $includeXml);
+		$record = $this->decorateArticle ($record, $collectionId, $imageSize, $imageShape, array (), $includeXml);
 		
 		# Return the record
 		return $record;
@@ -79,7 +79,7 @@ class articleModel
 	
 	
 	# Function to get articles data
-	public function getArticlesData ($baseUrl, $collection = false, $imageSize = false, $searchPhrase = false, $category = false, $material = false, $artist = false, $requireImages = false, $random = 0, $requestedPage = 1)
+	public function getArticlesData ($baseUrl, $collection = false, $imageSize = false, $imageShape = false, $searchPhrase = false, $category = false, $material = false, $artist = false, $requireImages = false, $random = 0, $requestedPage = 1)
 	{
 		# Start a list of constraints
 		$where = array ();
@@ -185,7 +185,7 @@ class articleModel
 		
 		# Decorate the data
 		foreach ($data as $id => $record) {
-			$data[$id] = $this->decorateArticle ($record, $collection, $imageSize, $filterToFields, false);
+			$data[$id] = $this->decorateArticle ($record, $collection, $imageSize, $imageShape, $filterToFields, false);
 		}
 		
 		# Ensure the page is not being exceeded
@@ -258,7 +258,7 @@ class articleModel
 	
 	
 	# Function to decorate an article
-	private function decorateArticle ($record, $collectionId, $imageSize, $filterToFields = array (), $includeXml = false)
+	private function decorateArticle ($record, $collectionId, $imageSize, $imageShape, $filterToFields = array (), $includeXml = false)
 	{
 		# Determine the collections associated with this record
 		$this->collections = $this->parseCollections ($record['Collection']);
@@ -282,7 +282,7 @@ class articleModel
 				if (!in_array ($section, $filterToFields)) {continue;}
 			}
 			$function = 'get' . ucfirst ($section);		// e.g. getDimensions
-			$data[$section] = $this->{$function} ($article, $record, $collectionId, $imageSize);
+			$data[$section] = $this->{$function} ($article, $record, $collectionId, $imageSize, $imageShape);
 		}
 		
 		# Include the XML if required
@@ -1059,7 +1059,7 @@ class articleModel
 	
 	
 	# Function to create a list of images, as paths
-	private function getImages ($article_ignored, $record, $collectionId_ignored, $size)
+	private function getImages ($article_ignored, $record, $collectionId_ignored, $size, $shape)
 	{
 		# Get the filenames
 		$images = $this->getImageFiles ($article_ignored, $record);
@@ -1069,19 +1069,19 @@ class articleModel
 			$recordMoniker = $this->getMoniker ($article_ignored, $record);
 			
 			# Determine the thumbnail physical file location
-			$thumbnailFile = $this->modesCatalogueApi->thumbnailFile ('records', $recordMoniker, ($index + 1), $size);
+			$thumbnailFile = $this->modesCatalogueApi->thumbnailFile ('records', $recordMoniker, ($index + 1), $size, $shape);
 			
 			# If the thumbnail file does not yet exist, generate it
 			if (!file_exists ($thumbnailFile)) {
-				$this->modesCatalogueApi->writeThumbnail ($image, $size, $shape = false, $thumbnailFile, /* Variables needed for workaround for legacy records without path: */ $namespace = 'records', $record['id']);
+				$this->modesCatalogueApi->writeThumbnail ($image, $size, $shape, $thumbnailFile, /* Variables needed for workaround for legacy records without path: */ $namespace = 'records', $record['id']);
 			}
 			
 			# Get the dimensions of the thumbnail file
 			list ($width, $height, $type_ignored, $attributes_ignored) = getimagesize ($thumbnailFile);
 			
-			# Register the iamge details
+			# Register the image details
 			$images[$index] = array (
-				'path'		=> $this->modesCatalogueApi->thumbnailLocation ('records', $recordMoniker, ($index + 1), $size),
+				'path'		=> $this->modesCatalogueApi->thumbnailLocation ('records', $recordMoniker, ($index + 1), $size, $shape),
 				'width'		=> $width,
 				'height'	=> $height,
 			);
