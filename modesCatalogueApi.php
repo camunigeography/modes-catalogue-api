@@ -2450,6 +2450,18 @@ class modesCatalogueApi extends frontControllerApplication
 		# Select the image in the set to use
 		$file = $images[ ($index - 1) ];
 		
+		# Write the thumbnail
+		$this->writeThumbnail ($file, $size, $shape, $thumbnailFile, /* Variables needed for workaround for legacy records without path: */ $namespace, $recordId);
+		
+		# Serve the newly-generated thumbnail image
+		image::serve ($thumbnailFile);
+		return;
+	}
+	
+	
+	# Function to write a thumbnail
+	public function writeThumbnail ($file, $size, $shape, $thumbnailFile, /* Variables needed for workaround for legacy records without path: */ $namespace, $recordId)
+	{
 		# Determine the file location from the database-stored value
 		$file = $this->imageServerPath ($file, /* Variables needed for workaround for legacy records without path: */ $namespace, $recordId);
 		
@@ -2479,11 +2491,8 @@ class modesCatalogueApi extends frontControllerApplication
 		
 		# Resize the image
 		ini_set ('max_execution_time', 30);
+		require_once ('image.php');
 		image::resize ($file, 'jpg', $newWidth, $newHeight, $thumbnailFile, $watermarkCallback, true, true, $cropWidth, $cropHeight);
-		
-		# Serve the newly-generated thumbnail image
-		image::serve ($thumbnailFile);
-		return;
 	}
 	
 	
