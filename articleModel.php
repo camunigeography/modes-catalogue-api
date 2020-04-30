@@ -1071,7 +1071,22 @@ class articleModel
 		# Convert to a thumbnail location
 		foreach ($images as $index => $image) {
 			$recordMoniker = $this->getMoniker ($article_ignored, $record);
-			$images[$index] = $this->modesCatalogueApi->thumbnailLocation ('records', $recordMoniker, ($index + 1), $size);
+			
+			# Get the file dimensions if the thumbnail has been generated already
+			#!# A thumbnail generation needs to be triggered at this point
+			$width = NULL;
+			$height = NULL;
+			$file = $this->modesCatalogueApi->thumbnailFile ('records', $recordMoniker, ($index + 1), $size);
+			if (file_exists ($file)) {
+				list ($width, $height, $type_ignored, $attributes_ignored) = getimagesize ($file);
+			}
+			
+			# Register the iamge details
+			$images[$index] = array (
+				'path'		=> $this->modesCatalogueApi->thumbnailLocation ('records', $recordMoniker, ($index + 1), $size),
+				'width'		=> $width,
+				'height'	=> $height,
+			);
 		}
 		
 		# Return the list

@@ -2545,7 +2545,8 @@ class modesCatalogueApi extends frontControllerApplication
 	
 	
 	# Function to determine the thumbnail file
-	private function thumbnailFile ($namespace, $id, $index, $size = 300, $shape = false)
+	#!# Move into articleModel then make private
+	public function thumbnailFile ($namespace, $id, $index, $size = 300, $shape = false)
 	{
 		# Assemble the thumbnail location
 		$thumbnailFile = $_SERVER['DOCUMENT_ROOT'] . $this->thumbnailLocation ($namespace, $id, $index, $size, $shape);
