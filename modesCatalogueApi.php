@@ -2367,11 +2367,11 @@ class modesCatalogueApi extends frontControllerApplication
 	}
 	
 	
-	# Image thumbnailing
+	# Image thumbnail serving, which takes a moniker (so that the URLs are clean and definitive) and convert to an ID (so that the underlying file can be retrieved)
 	public function images ()
 	{
-		# Ensure there is an ID
-		if (!$id = (isSet ($_GET['id']) && strlen ($_GET['id']) ? $_GET['id'] : false)) {
+		# Ensure there is a moniker
+		if (!$moniker = (isSet ($_GET['id']) && strlen ($_GET['id']) ? $_GET['id'] : false)) {
 			echo 'ERROR: No ID supplied.';
 			application::sendHeader (404);
 			return;
@@ -2412,7 +2412,7 @@ class modesCatalogueApi extends frontControllerApplication
 		require_once ('image.php');
 		
 		# If the image is already present, serve as-is
-		$thumbnailFile = $this->thumbnailFile ($namespace, $id, $index, $size, $shape);
+		$thumbnailFile = $this->thumbnailFile ($namespace, $moniker, $index, $size, $shape);
 		if (file_exists ($thumbnailFile)) {
 			image::serve ($thumbnailFile);
 			return;
@@ -2422,7 +2422,7 @@ class modesCatalogueApi extends frontControllerApplication
 		$disableDotToSlashConversion = ($namespace == 'biographies');
 		
 		# Convert the moniker to an ID
-		$recordId = $this->recordIdFromMoniker ($id, $disableDotToSlashConversion);
+		$recordId = $this->recordIdFromMoniker ($moniker, $disableDotToSlashConversion);
 		
 		# Get the ID from the database
 		$imageString = $this->databaseConnection->selectOneField ($this->settings['database'], $namespace, 'image', array ('id' => $recordId), array ('image'));
