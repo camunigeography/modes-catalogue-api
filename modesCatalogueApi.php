@@ -2444,8 +2444,14 @@ class modesCatalogueApi extends frontControllerApplication
 			return;
 		}
 		
+		# Convert image string to array
+		$images = $this->unpipeList ($imageString);
+		
+		# Select the image in the set to use
+		$file = $images[ ($index - 1) ];
+		
 		# Determine the file location from the database-stored value
-		$location = $this->originalImageFile ($imageString, $index, /* Variables needed for workaround for legacy records without path: */ $namespace, $recordId);
+		$file = $this->imageServerPath ($file, /* Variables needed for workaround for legacy records without path: */ $namespace, $recordId);
 		
 		# Enable watermarking, by defining a callback function, below
 		$watermarkCallback = array ($this, 'watermarkImagick');
@@ -2460,7 +2466,7 @@ class modesCatalogueApi extends frontControllerApplication
 		if ($shape == 'square') {
 			
 			# Cropping needs to ensure both the height and width are at least the size, so the height may need to be set as the dominant instead of defaulting to the width
-			list ($originalWidth, $originalHeight, $imageType, $imageAttributes) = getimagesize ($location);
+			list ($originalWidth, $originalHeight, $imageType, $imageAttributes) = getimagesize ($file);
 			if ($originalWidth > $originalHeight) {
 				$newWidth = '';
 				$newHeight = $size;	// Set the height to dominate
@@ -2473,7 +2479,7 @@ class modesCatalogueApi extends frontControllerApplication
 		
 		# Resize the image
 		ini_set ('max_execution_time', 30);
-		image::resize ($location, 'jpg', $newWidth, $newHeight, $thumbnailFile, $watermarkCallback, true, true, $cropWidth, $cropHeight);
+		image::resize ($file, 'jpg', $newWidth, $newHeight, $thumbnailFile, $watermarkCallback, true, true, $cropWidth, $cropHeight);
 		
 		# Serve the newly-generated thumbnail image
 		image::serve ($thumbnailFile);
@@ -2482,14 +2488,8 @@ class modesCatalogueApi extends frontControllerApplication
 	
 	
 	# Function to determine the original image location from the database-stored value
-	private function originalImageFile ($imageString, $index /* from 1 */, /* Workaround for legacy records without path: */ $namespace, $recordId)
+	private function imageServerPath ($file, /* Workaround for legacy records without path: */ $namespace, $recordId)
 	{
-		# Convert image string to array
-		$images = $this->unpipeList ($imageString);
-		
-		# Select the image in the set to use
-		$file = $images[ ($index - 1) ];
-		
 		# Convert the location in Windows format to its Unix equivalent
 		$file = str_replace ('\\', '/', $file);
 		$file = preg_replace ('|^X:/spripictures|', $this->settings['imageStoreRoot'], $file);
