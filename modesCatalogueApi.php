@@ -49,7 +49,7 @@ class modesCatalogueApi extends frontControllerApplication
 			'listingThumbnailType' => 'gif',
 			'articleImageClass' => false,
 			'imageFilenameLiberalMatching' => true,	// Allow case-insensitive matches of image names
-			'supportedImageSizes' => array (300, 400, 600),
+			'supportedImageSizes' => array (300, 400, 450, 600),
 			'supportedImageShapes' => array ('square'),
 			
 			'administratorEmail' => NULL,
