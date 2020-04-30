@@ -1317,11 +1317,14 @@ class modesCatalogueApi extends frontControllerApplication
 		# Get the current page
 		$page = ((isSet ($_GET['page']) && ctype_digit ($_GET['page'])) ? $_GET['page'] : 1);
 		
+		# Image size
+		$imageSize = (isSet ($_GET['imagesize']) && in_array ($_GET['imagesize'], $this->settings['supportedImageSizes']) ? $_GET['imagesize'] : $this->settings['supportedImageSizes'][0]);
+		
 		# Get the data
 		ini_set ('display_errors', false);	// #!# Ensure any errors do not disrupt API output
 		require_once ('articleModel.php');
 		$articleModel = new articleModel ($this, $this->settings, $this->databaseConnection);
-		$data = $articleModel->getArticlesData ($baseUrl, $collection, $search, $category, $material, $artist, $requireImages, $random, $page);
+		$data = $articleModel->getArticlesData ($baseUrl, $collection, $imageSize, $search, $category, $material, $artist, $requireImages, $random, $page);
 		
 		# Construct URLs
 		foreach ($data['articles'] as $id => $article) {
@@ -1384,6 +1387,8 @@ class modesCatalogueApi extends frontControllerApplication
 		$html .= "\n" . '<dl class="code">
 			<dt><strong>collection</strong> <em>string</em></dt>
 				<dd>The collection identifier</dd>
+			<dt><strong>imagesize</strong> <em>string: ' . implode ('|', $this->settings['supportedImageSizes']) . '</em></dt>
+				<dd>Image size of the returned images</dd>
 			<dt><strong>search</strong> <em>string</em></dt>
 				<dd>A search string, which will be checked as a free text search against various fields</dd>
 			<dt><strong>category</strong> <em>string</em></dt>
@@ -1448,11 +1453,14 @@ class modesCatalogueApi extends frontControllerApplication
 		# Determine the biographies prefix
 		$baseUrlPeople = (isSet ($_GET['baseUrlPeople']) ? $_GET['baseUrlPeople'] : false);
 		
+		# Image size
+		$imageSize = (isSet ($_GET['imagesize']) && in_array ($_GET['imagesize'], $this->settings['supportedImageSizes']) ? $_GET['imagesize'] : $this->settings['supportedImageSizes'][0]);
+		
 		# Parse the record data
 		ini_set ('display_errors', false);	// #!# Ensure any errors do not disrupt API output
 		require_once ('articleModel.php');
 		$articleModel = new articleModel ($this, $this->settings, $this->databaseConnection);
-		$data = $articleModel->getOne ($_GET['id'], $collectionId, $includeXml);
+		$data = $articleModel->getOne ($_GET['id'], $collectionId, $imageSize, $includeXml);
 		
 		# Get expedition URLs and images
 		#!# Consider whether this block should logically be within articleModel
@@ -1608,6 +1616,8 @@ class modesCatalogueApi extends frontControllerApplication
 		$html .= "\n" . '<dl class="code">
 			<dt><strong>collection</strong> <em>string</em></dt>
 				<dd>The collection identifier, which adds contextual information (e.g. IDs of next/previous items in same collection); the special value "?" (signifying auto) can also be used to generate context automatically from the first collection listed in the record if present</dd>
+			<dt><strong>imagesize</strong> <em>string: ' . implode ('|', $this->settings['supportedImageSizes']) . '</em></dt>
+				<dd>Image size of the returned images</dd>
 			<dt><strong>baseUrlExpeditions</strong> <em>string</em></dt>
 				<dd>A string which will be prefixed to the URL value for each expedition</dd>
 			<dt><strong>baseUrlPeople</strong> <em>string</em></dt>

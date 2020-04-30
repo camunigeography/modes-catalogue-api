@@ -52,7 +52,7 @@ class articleModel
 	
 	
 	# Getter to return the structured data
-	public function getOne ($id, $collectionId = false, $includeXml = false)
+	public function getOne ($id, $collectionId = false, $imageSize = false, $includeXml = false)
 	{
 		# Get the data for the article; note that BINARY is used to force case sensitivity
 		$query = "
@@ -71,7 +71,7 @@ class articleModel
 		}
 		
 		# Decorate the record
-		$record = $this->decorateArticle ($record, $collectionId, array (), $includeXml);
+		$record = $this->decorateArticle ($record, $collectionId, $imageSize, array (), $includeXml);
 		
 		# Return the record
 		return $record;
@@ -79,7 +79,7 @@ class articleModel
 	
 	
 	# Function to get articles data
-	public function getArticlesData ($baseUrl, $collection = false, $searchPhrase = false, $category = false, $material = false, $artist = false, $requireImages = false, $random = 0, $requestedPage = 1)
+	public function getArticlesData ($baseUrl, $collection = false, $imageSize = false, $searchPhrase = false, $category = false, $material = false, $artist = false, $requireImages = false, $random = 0, $requestedPage = 1)
 	{
 		# Start a list of constraints
 		$where = array ();
@@ -185,7 +185,7 @@ class articleModel
 		
 		# Decorate the data
 		foreach ($data as $id => $record) {
-			$data[$id] = $this->decorateArticle ($record, $collection, $filterToFields, false);
+			$data[$id] = $this->decorateArticle ($record, $collection, $imageSize, $filterToFields, false);
 		}
 		
 		# Ensure the page is not being exceeded
@@ -258,7 +258,7 @@ class articleModel
 	
 	
 	# Function to decorate an article
-	private function decorateArticle ($record, $collectionId, $filterToFields = array (), $includeXml = false)
+	private function decorateArticle ($record, $collectionId, $imageSize, $filterToFields = array (), $includeXml = false)
 	{
 		# Determine the collections associated with this record
 		$this->collections = $this->parseCollections ($record['Collection']);
@@ -282,7 +282,7 @@ class articleModel
 				if (!in_array ($section, $filterToFields)) {continue;}
 			}
 			$function = 'get' . ucfirst ($section);		// e.g. getDimensions
-			$data[$section] = $this->{$function} ($article, $record, $collectionId);
+			$data[$section] = $this->{$function} ($article, $record, $collectionId, $imageSize);
 		}
 		
 		# Include the XML if required
@@ -1059,14 +1059,10 @@ class articleModel
 	
 	
 	# Function to create a list of images, as paths
-	private function getImages ($article_ignored, $record)
+	private function getImages ($article_ignored, $record, $collectionId_ignored, $imageSize)
 	{
 		# Get the filenames
 		$images = $this->getImageFiles ($article_ignored, $record);
-		
-		# Set the size
-		#!# Needs to be configurable, e.g. square300
-		$size = $this->modesCatalogueApi->settings['supportedImageSizes'][0];
 		
 		# Convert to a thumbnail location
 		foreach ($images as $index => $image) {
@@ -1076,14 +1072,14 @@ class articleModel
 			#!# A thumbnail generation needs to be triggered at this point
 			$width = NULL;
 			$height = NULL;
-			$file = $this->modesCatalogueApi->thumbnailFile ('records', $recordMoniker, ($index + 1), $size);
+			$file = $this->modesCatalogueApi->thumbnailFile ('records', $recordMoniker, ($index + 1), $imageSize);
 			if (file_exists ($file)) {
 				list ($width, $height, $type_ignored, $attributes_ignored) = getimagesize ($file);
 			}
 			
 			# Register the iamge details
 			$images[$index] = array (
-				'path'		=> $this->modesCatalogueApi->thumbnailLocation ('records', $recordMoniker, ($index + 1), $size),
+				'path'		=> $this->modesCatalogueApi->thumbnailLocation ('records', $recordMoniker, ($index + 1), $imageSize),
 				'width'		=> $width,
 				'height'	=> $height,
 			);
