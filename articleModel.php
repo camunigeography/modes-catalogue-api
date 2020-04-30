@@ -1059,7 +1059,7 @@ class articleModel
 	
 	
 	# Function to create a list of images, as paths
-	private function getImages ($article_ignored, $record, $collectionId_ignored, $imageSize)
+	private function getImages ($article_ignored, $record, $collectionId_ignored, $size)
 	{
 		# Get the filenames
 		$images = $this->getImageFiles ($article_ignored, $record);
@@ -1068,18 +1068,20 @@ class articleModel
 		foreach ($images as $index => $image) {
 			$recordMoniker = $this->getMoniker ($article_ignored, $record);
 			
-			# Get the file dimensions if the thumbnail has been generated already
-			#!# A thumbnail generation needs to be triggered at this point
-			$width = NULL;
-			$height = NULL;
-			$file = $this->modesCatalogueApi->thumbnailFile ('records', $recordMoniker, ($index + 1), $imageSize);
-			if (file_exists ($file)) {
-				list ($width, $height, $type_ignored, $attributes_ignored) = getimagesize ($file);
+			# Determine the thumbnail physical file location
+			$thumbnailFile = $this->modesCatalogueApi->thumbnailFile ('records', $recordMoniker, ($index + 1), $size);
+			
+			# If the thumbnail file does not yet exist, generate it
+			if (!file_exists ($thumbnailFile)) {
+				$this->modesCatalogueApi->writeThumbnail ($image, $size, $shape = false, $thumbnailFile, /* Variables needed for workaround for legacy records without path: */ $namespace = 'records', $record['id']);
 			}
+			
+			# Get the dimensions of the thumbnail file
+			list ($width, $height, $type_ignored, $attributes_ignored) = getimagesize ($thumbnailFile);
 			
 			# Register the iamge details
 			$images[$index] = array (
-				'path'		=> $this->modesCatalogueApi->thumbnailLocation ('records', $recordMoniker, ($index + 1), $imageSize),
+				'path'		=> $this->modesCatalogueApi->thumbnailLocation ('records', $recordMoniker, ($index + 1), $size),
 				'width'		=> $width,
 				'height'	=> $height,
 			);
@@ -1091,6 +1093,7 @@ class articleModel
 	
 	
 	# Function to create a list of images, as filenames; deprecated
+	#!# Similar purpose of unpipeList, but has Status=P checking
 	private function getImageFiles ($article_ignored, $record)
 	{
 		# End if private
