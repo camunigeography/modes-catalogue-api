@@ -2492,20 +2492,16 @@ class modesCatalogueApi extends frontControllerApplication
 		}
 		
 		# Try each path, both with the original file extension and upper-cased
+		#!# Need a report that finds cases like /article/p2005.5.1/ that have .jpg in the record but the file is .tif, etc.
+		$basename = pathinfo ($file, PATHINFO_FILENAME);
+		$tryExtensions = array ('jpg', 'tif', 'JPG', 'TIF');
 		foreach ($tryPaths as $tryPath) {
-			$fileLowercasedExtension = preg_replace ('/.JPG$/', '.jpg', $file);
-			$fileLowercasedExtension = preg_replace ('/.TIF$/', '.tif', $file);
-			$fileUppercasedExtension = preg_replace ('/.jpg$/', '.JPG', $file);
-			$fileUppercasedExtension = preg_replace ('/.tif$/', '.TIF', $file);
-			if (file_exists ($tryPath . $file)) {
-				$file = $tryPath . $file;
-				break;
-			} else if (file_exists ($tryPath . $fileLowercasedExtension)) {
-				$file = $tryPath . $fileLowercasedExtension;
-				break;
-			} else if (file_exists ($tryPath . $fileUppercasedExtension)) {
-				$file = $tryPath . $fileUppercasedExtension;
-				break;
+			foreach ($tryExtensions as $tryExtension) {
+				$tryFile = $tryPath . $basename . '.' . $tryExtension;
+				if (file_exists ($tryFile)) {
+					$file = $tryFile;
+					break 2;
+				}
 			}
 		}
 		
