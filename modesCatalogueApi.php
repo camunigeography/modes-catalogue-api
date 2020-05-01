@@ -1368,16 +1368,23 @@ class modesCatalogueApi extends frontControllerApplication
     "articles": {
         "N: 1": {
             "id": "N: 1",
+            "moniker": "n1",
             "status": null,
             "collections": [
                 "armc"
             ],
             "title": "Harness",
             "briefDescription": "Harness, dog. Labrador Inuit. Labrador, Newfoundland, Canada, before April, 1938.",
+            "images": [
+                {
+                    "path": "/collections/catalogue/images/records/size450/n1_1.jpg",
+                    "width": 450,
+                    "height": 300
+                }
+            ],
             "imageFiles": [
                 "N1.TIF"
             ],
-            "link": "/N:_1/"
         },
         ...
     }
@@ -1543,6 +1550,7 @@ class modesCatalogueApi extends frontControllerApplication
 		$html .= "\n" . '<pre class="code">' . htmlspecialchars ('
 {
     "id": "N: 76a-b",
+    "moniker": "n76a-b",
     "type": "object",
     "status": null,
     "collections": [
@@ -1581,6 +1589,13 @@ class modesCatalogueApi extends frontControllerApplication
         }
     },
     "placeName": null,
+    "images": [
+        {
+            "path": "/collections/catalogue/images/records/size300/n76a-b_1.jpg",
+            "width": 300,
+            "height": 200
+        }
+    ],
     "imagesFiles": [
         "N_76_a_b.TIF"
     ],
