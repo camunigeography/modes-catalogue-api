@@ -1318,7 +1318,10 @@ class modesCatalogueApi extends frontControllerApplication
 		$page = ((isSet ($_GET['page']) && ctype_digit ($_GET['page'])) ? $_GET['page'] : 1);
 		
 		# Image size
-		$imageSize = (isSet ($_GET['imagesize']) && in_array ($_GET['imagesize'], $this->settings['supportedImageSizes']) ? $_GET['imagesize'] : $this->settings['supportedImageSizes'][0]);
+		$imageSize = (isSet ($_GET['imagesize']) ? $_GET['imagesize'] : $this->settings['supportedImageSizes'][0]);
+		if (!ctype_digit ($imageSize) || !in_array ($imageSize, $this->settings['supportedImageSizes'])) {		// Digit check to avoid situation where e.g. '300foo' will pass as valid, but resize will ignore that, resulting in full-size image
+			return array ('error' => 'Unsupported image size.');
+		}
 		
 		# Image shape
 		$imageShape = (isSet ($_GET['imageshape']) ? $_GET['imageshape'] : false);
@@ -1469,7 +1472,10 @@ class modesCatalogueApi extends frontControllerApplication
 		$baseUrlPeople = (isSet ($_GET['baseUrlPeople']) ? $_GET['baseUrlPeople'] : false);
 		
 		# Image size
-		$imageSize = (isSet ($_GET['imagesize']) && in_array ($_GET['imagesize'], $this->settings['supportedImageSizes']) ? $_GET['imagesize'] : $this->settings['supportedImageSizes'][0]);
+		$imageSize = (isSet ($_GET['imagesize']) ? $_GET['imagesize'] : $this->settings['supportedImageSizes'][0]);
+		if (!ctype_digit ($imageSize) || !in_array ($imageSize, $this->settings['supportedImageSizes'])) {		// Digit check to avoid situation where e.g. '300foo' will pass as valid, but resize will ignore that, resulting in full-size image
+			return array ('error' => 'Unsupported image size.');
+		}
 		
 		# Image shape
 		$imageShape = (isSet ($_GET['imageshape']) ? $_GET['imageshape'] : false);
@@ -1692,7 +1698,10 @@ class modesCatalogueApi extends frontControllerApplication
 		$forceId = (isSet ($_GET['forceid']) ? $_GET['forceid'] : false);
 		
 		# Image size
-		$imageSize = (isSet ($_GET['imagesize']) && in_array ($_GET['imagesize'], $this->settings['supportedImageSizes']) ? $_GET['imagesize'] : $this->settings['supportedImageSizes'][0]);
+		$imageSize = (isSet ($_GET['imagesize']) ? $_GET['imagesize'] : $this->settings['supportedImageSizes'][0]);
+		if (!ctype_digit ($imageSize) || !in_array ($imageSize, $this->settings['supportedImageSizes'])) {		// Digit check to avoid situation where e.g. '300foo' will pass as valid, but resize will ignore that, resulting in full-size image
+			return array ('error' => 'Unsupported image size.');
+		}
 		
 		# Get the data
 		$fields = array ('id', 'name', 'rank', 'image');
@@ -1810,7 +1819,10 @@ class modesCatalogueApi extends frontControllerApplication
 		$nullPersonUrl = (isSet ($_GET['nullPersonUrl']) ? $_GET['nullPersonUrl'] : false);
 		
 		# Image size
-		$imageSize = (isSet ($_GET['imagesize']) && in_array ($_GET['imagesize'], $this->settings['supportedImageSizes']) ? $_GET['imagesize'] : $this->settings['supportedImageSizes'][0]);
+		$imageSize = (isSet ($_GET['imagesize']) ? $_GET['imagesize'] : $this->settings['supportedImageSizes'][0]);
+		if (!ctype_digit ($imageSize) || !in_array ($imageSize, $this->settings['supportedImageSizes'])) {		// Digit check to avoid situation where e.g. '300foo' will pass as valid, but resize will ignore that, resulting in full-size image
+			return array ('error' => 'Unsupported image size.');
+		}
 		
 		# Get the record data
 		$fields = array ('id', 'name', 'date', 'alias', 'rank', 'nationality', 'awards', 'about', 'data', 'collection', 'image');
@@ -2499,6 +2511,12 @@ class modesCatalogueApi extends frontControllerApplication
 	{
 		# Determine the file location from the database-stored value
 		$file = $this->imageServerPath ($file, /* Variables needed for workaround for legacy records without path: */ $namespace, $recordId);
+		
+		# Ensure the size is supported, to prevent the API emitting full-size images; this check should not be necessary as the API interface does a similar check, but is added here for safety
+		if (!ctype_digit ($size) || !in_array ($size, $this->settings['supportedImageSizes'])) {		// Digit check to avoid situation where e.g. '300foo' will pass as valid, but resize will ignore that, resulting in full-size image
+			$errorText = 'Unsupported image size.';
+			return false;
+		}
 		
 		# End if the file still cannot be found
 		if (!file_exists ($file)) {
