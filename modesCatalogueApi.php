@@ -2543,8 +2543,8 @@ class modesCatalogueApi extends frontControllerApplication
 		
 		# Try each path, both with the original file extension and upper-cased
 		#!# Need a report that finds cases like /article/p2005.5.1/ that have .jpg in the record but the file is .tif, etc.
-		$basename = pathinfo ($file, PATHINFO_FILENAME);
 		$tryExtensions = array ('jpg', 'tif', 'JPG', 'TIF');
+		$basename = preg_replace ('/\.(' . implode ('|', $tryExtensions) . ')$/', '', $file);		// Cannot use pathinfo ($file, PATHINFO_FILENAME), as images may be specified in MODES in format 'subfolder/file.jpg'
 		foreach ($tryPaths as $tryPath) {
 			foreach ($tryExtensions as $tryExtension) {
 				$tryFile = $tryPath . $basename . '.' . $tryExtension;
