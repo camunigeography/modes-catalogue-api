@@ -2482,7 +2482,11 @@ class modesCatalogueApi extends frontControllerApplication
 		$file = $images[ ($index - 1) ];
 		
 		# Write the thumbnail
-		$this->writeThumbnail ($file, $size, $shape, $thumbnailFile, /* Variables needed for workaround for legacy records without path: */ $namespace, $recordId);
+		if (!$this->writeThumbnail ($file, $size, $shape, $thumbnailFile, /* Variables needed for workaround for legacy records without path: */ $namespace, $recordId, $errorText /* returned by reference */)) {
+			echo $errorText;
+			application::sendHeader (500);
+			return;
+		}
 		
 		# Serve the newly-generated thumbnail image
 		image::serve ($thumbnailFile);
@@ -2491,13 +2495,16 @@ class modesCatalogueApi extends frontControllerApplication
 	
 	
 	# Function to write a thumbnail
-	public function writeThumbnail ($file, $size, $shape, $thumbnailFile, /* Variables needed for workaround for legacy records without path: */ $namespace, $recordId)
+	public function writeThumbnail ($file, $size, $shape, $thumbnailFile, /* Variables needed for workaround for legacy records without path: */ $namespace, $recordId, &$errorText = false)
 	{
 		# Determine the file location from the database-stored value
 		$file = $this->imageServerPath ($file, /* Variables needed for workaround for legacy records without path: */ $namespace, $recordId);
 		
 		# End if the file still cannot be found
-		if (!file_exists ($file)) {return false;}
+		if (!file_exists ($file)) {
+			$errorText = "ERROR: Unable to create thumbnail as the referenced file ($file) could not be located.";
+			return false;
+		}
 		
 		# Set the width and height, so that the dominant dimension is the specified size, e.g. a landscape image allocates the size to the height, and then scales the width accordingly
 		list ($width, $height, $type_ignored, $attributes_ignored) = getimagesize ($file);
@@ -2524,6 +2531,9 @@ class modesCatalogueApi extends frontControllerApplication
 		ini_set ('max_execution_time', 30);
 		require_once ('image.php');
 		image::resize ($file, 'jpg', $newWidth, $newHeight, $thumbnailFile, $watermarkCallback, true, true, $cropWidth, $cropHeight);
+		
+		# Return success
+		return true;
 	}
 	
 	
