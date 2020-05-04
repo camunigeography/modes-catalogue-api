@@ -2538,6 +2538,18 @@ class modesCatalogueApi extends frontControllerApplication
 		$cropWidth = false;
 		$cropHeight = false;
 		if ($shape == 'square') {
+			
+			# Cropping needs to ensure both the height and width are at least the size, so the dominant dimension may have to be reversed to expand one side of the image beyond the square, after which the edges in the other dimension are then chopped
+			if ($width > $height) {
+				$newWidth = '';
+				$newHeight = $size;	// Set the height to dominate
+			}
+			if ($height > $width) {
+				$newWidth = $size;	// Set the width to dominate
+				$newHeight = '';
+			}
+			
+			# Set the crop width and height
 			$cropWidth = $size;
 			$cropHeight = $size;
 		}
