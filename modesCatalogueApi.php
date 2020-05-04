@@ -2496,29 +2496,29 @@ class modesCatalogueApi extends frontControllerApplication
 		# Determine the file location from the database-stored value
 		$file = $this->imageServerPath ($file, /* Variables needed for workaround for legacy records without path: */ $namespace, $recordId);
 		
-		# Enable watermarking, by defining a callback function, below
-		$watermarkCallback = array ($this, 'watermarkImagick');
+		# End if the file still cannot be found
+		if (!file_exists ($file)) {return false;}
 		
-		# Set the width to be consistent, and the height as auto
-		$newWidth = $size;
-		$newHeight = '';	// Auto
+		# Set the width and height, so that the dominant dimension is the specified size, e.g. a landscape image allocates the size to the height, and then scales the width accordingly
+		list ($width, $height, $type_ignored, $attributes_ignored) = getimagesize ($file);
+		if ($width > $height) {
+			$newWidth = $size;
+			$newHeight = '';		// Auto
+		} else {
+			$newWidth = '';			// Auto
+			$newHeight = $size;
+		}
 		
 		# Crop if required to square
 		$cropWidth = false;
 		$cropHeight = false;
 		if ($shape == 'square') {
-			
-			# Cropping needs to ensure both the height and width are at least the size, so the height may need to be set as the dominant instead of defaulting to the width
-			list ($originalWidth, $originalHeight, $imageType, $imageAttributes) = getimagesize ($file);
-			if ($originalWidth > $originalHeight) {
-				$newWidth = '';
-				$newHeight = $size;	// Set the height to dominate
-			}
-			
-			# Set the crop width and height
 			$cropWidth = $size;
 			$cropHeight = $size;
 		}
+		
+		# Enable watermarking, by defining a callback function, below
+		$watermarkCallback = array ($this, 'watermarkImagick');
 		
 		# Resize the image
 		ini_set ('max_execution_time', 30);
