@@ -1318,7 +1318,7 @@ class modesCatalogueApi extends frontControllerApplication
 		$page = ((isSet ($_GET['page']) && ctype_digit ($_GET['page'])) ? $_GET['page'] : 1);
 		
 		# Image size
-		$imageSize = (isSet ($_GET['imagesize']) ? $_GET['imagesize'] : $this->settings['supportedImageSizes'][0]);
+		$imageSize = (isSet ($_GET['imagesize']) ? $_GET['imagesize'] : (string) $this->settings['supportedImageSizes'][0]);
 		if (!ctype_digit ($imageSize) || !in_array ($imageSize, $this->settings['supportedImageSizes'])) {		// Digit check to avoid situation where e.g. '300foo' will pass as valid, but resize will ignore that, resulting in full-size image
 			return array ('error' => 'Unsupported image size.');
 		}
@@ -1472,7 +1472,7 @@ class modesCatalogueApi extends frontControllerApplication
 		$baseUrlPeople = (isSet ($_GET['baseUrlPeople']) ? $_GET['baseUrlPeople'] : false);
 		
 		# Image size
-		$imageSize = (isSet ($_GET['imagesize']) ? $_GET['imagesize'] : $this->settings['supportedImageSizes'][0]);
+		$imageSize = (isSet ($_GET['imagesize']) ? $_GET['imagesize'] : (string) $this->settings['supportedImageSizes'][0]);
 		if (!ctype_digit ($imageSize) || !in_array ($imageSize, $this->settings['supportedImageSizes'])) {		// Digit check to avoid situation where e.g. '300foo' will pass as valid, but resize will ignore that, resulting in full-size image
 			return array ('error' => 'Unsupported image size.');
 		}
@@ -1698,7 +1698,7 @@ class modesCatalogueApi extends frontControllerApplication
 		$forceId = (isSet ($_GET['forceid']) ? $_GET['forceid'] : false);
 		
 		# Image size
-		$imageSize = (isSet ($_GET['imagesize']) ? $_GET['imagesize'] : $this->settings['supportedImageSizes'][0]);
+		$imageSize = (isSet ($_GET['imagesize']) ? $_GET['imagesize'] : (string) $this->settings['supportedImageSizes'][0]);
 		if (!ctype_digit ($imageSize) || !in_array ($imageSize, $this->settings['supportedImageSizes'])) {		// Digit check to avoid situation where e.g. '300foo' will pass as valid, but resize will ignore that, resulting in full-size image
 			return array ('error' => 'Unsupported image size.');
 		}
@@ -1819,7 +1819,7 @@ class modesCatalogueApi extends frontControllerApplication
 		$nullPersonUrl = (isSet ($_GET['nullPersonUrl']) ? $_GET['nullPersonUrl'] : false);
 		
 		# Image size
-		$imageSize = (isSet ($_GET['imagesize']) ? $_GET['imagesize'] : $this->settings['supportedImageSizes'][0]);
+		$imageSize = (isSet ($_GET['imagesize']) ? $_GET['imagesize'] : (string) $this->settings['supportedImageSizes'][0]);
 		if (!ctype_digit ($imageSize) || !in_array ($imageSize, $this->settings['supportedImageSizes'])) {		// Digit check to avoid situation where e.g. '300foo' will pass as valid, but resize will ignore that, resulting in full-size image
 			return array ('error' => 'Unsupported image size.');
 		}
