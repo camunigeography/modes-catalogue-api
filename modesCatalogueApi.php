@@ -188,7 +188,7 @@ class modesCatalogueApi extends frontControllerApplication
 		WHERE
 			1=1
 			" . ($includeSuppressed ? '' : ' AND (suppressed != 1 OR suppressed IS NULL)') . "
-			" . ($groupings ? ' AND grouping IN(' . implode (', ', array_keys ($groupings)) . ')' : '') . "
+			" . ($groupings ? ' AND `grouping` IN(' . implode (', ', array_keys ($groupings)) . ')' : '') . "
 		ORDER BY collection
 		;";
 		$collections = $this->databaseConnection->getData ($query, "{$this->settings['database']}.collections", true, $preparedStatementValues);
@@ -389,7 +389,7 @@ class modesCatalogueApi extends frontControllerApplication
 		# Add the grouping
 		#!# Ideally this would work using an XPath "string('{$grouping}')" but that seems not to work
 		#!# Race condition problem if two imports for different groupings run concurrently
-		$query = "UPDATE {$this->settings['database']}.{$table} SET grouping = '{$grouping}' WHERE grouping IS NULL;";
+		$query = "UPDATE {$this->settings['database']}.{$table} SET `grouping` = '{$grouping}' WHERE `grouping` IS NULL;";
 		$this->databaseConnection->query ($query);
 		
 		# Add to the counter
@@ -493,7 +493,7 @@ class modesCatalogueApi extends frontControllerApplication
 					REPLACE (LOWER (id), ' ', '') AS id,
 					id AS collection,
 					'modes' AS source,
-					grouping,
+					`grouping`,
 					NULL AS suppressed,
 					Title AS title,
 					id AS abbreviation,
@@ -514,7 +514,7 @@ class modesCatalogueApi extends frontControllerApplication
 				WHERE
 					    Type = 'collection'
 					AND (`Status` != 'R' OR `Status` IS NULL)
-					AND grouping = '{$grouping}'
+					AND `grouping` = '{$grouping}'
 				ORDER BY title
 			)
 		;";
@@ -543,7 +543,7 @@ class modesCatalogueApi extends frontControllerApplication
 		$this->databaseConnection->query ($query);
 		
 		# Create a title for museum records which have no actual title (i.e. things that aren't artistic), using the ObjectType as the nearest equivalent
-		$query = "UPDATE {$this->settings['database']}.{$this->settings['table']} SET Title = ObjectType WHERE Title IS NULL AND grouping = 'museum';";
+		$query = "UPDATE {$this->settings['database']}.{$this->settings['table']} SET Title = ObjectType WHERE Title IS NULL AND `grouping` = 'museum';";
 		$this->databaseConnection->query ($query);
 		
 		# Create two indexes for the ID, splitting into prefix and suffix, for sortability reasons; see https://lists.mysql.com/mysql/213354
@@ -557,7 +557,7 @@ class modesCatalogueApi extends frontControllerApplication
 		$this->databaseConnection->query ($query);
 		
 		# Delete empty images
-		$query = "UPDATE {$this->settings['database']}.{$this->settings['table']} SET PhotographFilename = NULL WHERE PhotographFilename IN('.tif', '-master.tif') AND grouping = '{$grouping}';";
+		$query = "UPDATE {$this->settings['database']}.{$this->settings['table']} SET PhotographFilename = NULL WHERE PhotographFilename IN('.tif', '-master.tif') AND `grouping` = '{$grouping}';";
 		$this->databaseConnection->query ($query);
 	}
 	
