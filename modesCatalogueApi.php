@@ -133,137 +133,137 @@ class modesCatalogueApi extends frontControllerApplication
 			
 			-- Administrators
 			CREATE TABLE `administrators` (
-			  `username` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Username',
-			  `active` enum('','Yes','No') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Yes' COMMENT 'Currently active?',
-			  `privilege` enum('Administrator','Restricted administrator') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Administrator' COMMENT 'Administrator level',
+			  `username` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Username',
+			  `active` enum('','Yes','No') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Yes' COMMENT 'Currently active?',
+			  `privilege` enum('Administrator','Restricted administrator') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Administrator' COMMENT 'Administrator level',
 			  PRIMARY KEY (`username`)
-			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='System administrators';
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='System administrators';
 			
 			-- ARMC categories
 			CREATE TABLE `armcCategories` (
-			  `category` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-			  `classification` text COLLATE utf8_unicode_ci,
+			  `category` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+			  `classification` text COLLATE utf8mb4_unicode_ci,
 			  PRIMARY KEY (`category`)
-			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 			
 			-- Biographies
 			CREATE TABLE `biographies` (
-			  `id` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'ID',
-			  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Name',
-			  `date` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Date',
-			  `alias` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Alias',
-			  `rank` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Rank',
-			  `nationality` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Nationality',
-			  `awards` text COLLATE utf8_unicode_ci COMMENT 'Awards',
-			  `about` text COLLATE utf8_unicode_ci COMMENT 'About',
-			  `image` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Image',
-			  `data` text COLLATE utf8_unicode_ci NOT NULL COMMENT 'XML of record',
-			  `collection` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Collection',
-			  `grouping` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Grouping (internal field)',
+			  `id` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ID',
+			  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Name',
+			  `date` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Date',
+			  `alias` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Alias',
+			  `rank` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Rank',
+			  `nationality` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Nationality',
+			  `awards` text COLLATE utf8mb4_unicode_ci COMMENT 'Awards',
+			  `about` text COLLATE utf8mb4_unicode_ci COMMENT 'About',
+			  `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Image',
+			  `data` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'XML of record',
+			  `collection` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Collection',
+			  `grouping` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Grouping (internal field)',
 			  PRIMARY KEY (`id`)
-			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Records (snapshot date: yymmdd)';
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Records (snapshot date: yymmdd)';
 			
 			-- Collections
 			CREATE TABLE `collections` (
-			  `id` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'URL key',
-			  `collection` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Indicator used in records',
-			  `source` enum('manual','modes') COLLATE utf8_unicode_ci NOT NULL COMMENT 'Source',
-			  `grouping` enum('museum','picturelibrary','art','Both') COLLATE utf8_unicode_ci DEFAULT NULL,
+			  `id` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'URL key',
+			  `collection` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Indicator used in records',
+			  `source` enum('manual','modes') COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Source',
+			  `grouping` enum('museum','picturelibrary','art','Both') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
 			  `suppressed` int DEFAULT NULL COMMENT 'Whether to suppress from public view',
-			  `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-			  `abbreviation` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-			  `introductoryTextBrief` text COLLATE utf8_unicode_ci NOT NULL,
-			  `introductoryText` text COLLATE utf8_unicode_ci COMMENT 'Introductory text',
-			  `aboutPageHtml` text COLLATE utf8_unicode_ci COMMENT 'Full ''about'' page',
-			  `aboutPageTabText` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Text in tab for about page (otherwise will default to ''About'')',
-			  `contactsPageHtml` text COLLATE utf8_unicode_ci COMMENT 'HTML of text on a contact page (or none to represent no page)',
-			  `contactsPageEmail` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'E-mail address used in form',
-			  `sponsorNotice` text COLLATE utf8_unicode_ci COMMENT 'Sponsor notice',
-			  `categoriesTable` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+			  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+			  `abbreviation` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+			  `introductoryTextBrief` text COLLATE utf8mb4_unicode_ci NOT NULL,
+			  `introductoryText` text COLLATE utf8mb4_unicode_ci COMMENT 'Introductory text',
+			  `aboutPageHtml` text COLLATE utf8mb4_unicode_ci COMMENT 'Full ''about'' page',
+			  `aboutPageTabText` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Text in tab for about page (otherwise will default to ''About'')',
+			  `contactsPageHtml` text COLLATE utf8mb4_unicode_ci COMMENT 'HTML of text on a contact page (or none to represent no page)',
+			  `contactsPageEmail` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'E-mail address used in form',
+			  `sponsorNotice` text COLLATE utf8mb4_unicode_ci COMMENT 'Sponsor notice',
+			  `categoriesTable` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
 			  `disableCategories` int DEFAULT NULL COMMENT 'Disable listing of categories',
 			  `disableMaterials` int DEFAULT NULL COMMENT 'Disable listing of materials',
 			  `disableArtists` int DEFAULT NULL COMMENT 'Disable listing of artists',
-			  `imagesSubfolder` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+			  `imagesSubfolder` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
 			  PRIMARY KEY (`id`)
-			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Table containing overall application configuration for each ';
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Table containing overall application configuration for each ';
 			
 			-- Configurations (legacy)
 			CREATE TABLE `configuration` (
-			  `id` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'URL key',
-			  `grouping` enum('Museum','Picture Library','Both') COLLATE utf8_unicode_ci DEFAULT NULL,
+			  `id` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'URL key',
+			  `grouping` enum('Museum','Picture Library','Both') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
 			  `suppressed` int DEFAULT NULL COMMENT 'Whether this gallery''s visibility is suppressed in the live catalogue runtime',
-			  `gallery` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Indicator used in MODES XML records',
-			  `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-			  `abbreviation` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-			  `introductoryTextBrief` text COLLATE utf8_unicode_ci NOT NULL,
-			  `introductoryText` text COLLATE utf8_unicode_ci COMMENT 'Introductory text',
-			  `aboutPageHtml` text COLLATE utf8_unicode_ci COMMENT 'Full ''about'' page',
-			  `aboutPageTabText` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Text in tab for about page (otherwise will default to ''About'')',
-			  `contactsPageHtml` text COLLATE utf8_unicode_ci COMMENT 'HTML of text on a contact page (or none to represent no page)',
-			  `contactsPageEmail` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'E-mail address used in form',
-			  `sponsorNotice` text COLLATE utf8_unicode_ci COMMENT 'Sponsor notice',
-			  `categoriesTable` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+			  `gallery` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Indicator used in MODES XML records',
+			  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+			  `abbreviation` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+			  `introductoryTextBrief` text COLLATE utf8mb4_unicode_ci NOT NULL,
+			  `introductoryText` text COLLATE utf8mb4_unicode_ci COMMENT 'Introductory text',
+			  `aboutPageHtml` text COLLATE utf8mb4_unicode_ci COMMENT 'Full ''about'' page',
+			  `aboutPageTabText` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Text in tab for about page (otherwise will default to ''About'')',
+			  `contactsPageHtml` text COLLATE utf8mb4_unicode_ci COMMENT 'HTML of text on a contact page (or none to represent no page)',
+			  `contactsPageEmail` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'E-mail address used in form',
+			  `sponsorNotice` text COLLATE utf8mb4_unicode_ci COMMENT 'Sponsor notice',
+			  `categoriesTable` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
 			  `disableArtists` int DEFAULT NULL COMMENT 'Disable listing of artists',
 			  `disableCategories` int DEFAULT NULL COMMENT 'Disable listing of categories',
 			  `disableMaterials` int DEFAULT NULL COMMENT 'Disable listing of materials',
-			  `imagesSubfolder` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+			  `imagesSubfolder` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
 			  PRIMARY KEY (`id`)
-			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Table containing overall application configuration for each ';
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Table containing overall application configuration for each ';
 			
 			-- Expeditions
 			CREATE TABLE `expeditions` (
-			  `id` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'ID',
-			  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Name',
-			  `date` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Date',
-			  `leader` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Leader',
-			  `about` text COLLATE utf8_unicode_ci COMMENT 'About',
-			  `data` text COLLATE utf8_unicode_ci NOT NULL COMMENT 'XML of record',
-			  `collection` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Collection',
-			  `grouping` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Grouping (internal field)',
+			  `id` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ID',
+			  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Name',
+			  `date` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Date',
+			  `leader` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Leader',
+			  `about` text COLLATE utf8mb4_unicode_ci COMMENT 'About',
+			  `data` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'XML of record',
+			  `collection` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Collection',
+			  `grouping` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Grouping (internal field)',
 			  PRIMARY KEY (`id`)
-			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Records (snapshot date: yymmdd)';
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Records (snapshot date: yymmdd)';
 			
 			-- Lookups
 			CREATE TABLE `lookups` (
-			  `Term` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Term',
-			  `BroaderTerm` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Broader term',
-			  `NarrowerTerm` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Narrower term',
-			  `SeeAlso` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'See also',
-			  `PreferredTerm` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Preferred term',
-			  `UseFor` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Use for',
+			  `Term` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Term',
+			  `BroaderTerm` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Broader term',
+			  `NarrowerTerm` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Narrower term',
+			  `SeeAlso` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'See also',
+			  `PreferredTerm` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Preferred term',
+			  `UseFor` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Use for',
 			  PRIMARY KEY (`Term`)
-			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Terminology lookups';
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Terminology lookups';
 			
 			-- Records
 			CREATE TABLE `records` (
-			  `id` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-			  `id_prefix` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Prefix part of ID for sorting purposes',
+			  `id` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+			  `id_prefix` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Prefix part of ID for sorting purposes',
 			  `id_suffix` int DEFAULT NULL COMMENT 'Numeric part of ID for sorting purposes',
-			  `grouping` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Grouping',
-			  `Collection` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-			  `Context` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-			  `Type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Type of record (record or collection-level)',
-			  `Status` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
-			  `ObjectType` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-			  `Title` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
-			  `BriefDescription` text COLLATE utf8_unicode_ci,
-			  `Description` text COLLATE utf8_unicode_ci,
-			  `PhotographFilename` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
-			  `ReproductionFilename` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Reproduction/Filename',
-			  `Category` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-			  `Material` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
-			  `Artist` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Artist (if any)',
-			  `data` text COLLATE utf8_unicode_ci NOT NULL,
-			  `CollectionName` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Used for debugging; taken from Identification/CollectionName',
-			  `searchKeyword` text COLLATE utf8_unicode_ci COMMENT 'Keyword',
-			  `searchDescription` text COLLATE utf8_unicode_ci COMMENT 'Description search',
-			  `searchPersonOrganisation` text COLLATE utf8_unicode_ci COMMENT 'Person/organisation',
-			  `searchExpedition` text COLLATE utf8_unicode_ci COMMENT 'Expedition',
-			  `searchPlace` text COLLATE utf8_unicode_ci COMMENT 'Place',
-			  `searchSubject` text COLLATE utf8_unicode_ci COMMENT 'Subject',
+			  `grouping` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Grouping',
+			  `Collection` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+			  `Context` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+			  `Type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Type of record (record or collection-level)',
+			  `Status` varchar(1024) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+			  `ObjectType` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+			  `Title` varchar(1024) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+			  `BriefDescription` text COLLATE utf8mb4_unicode_ci,
+			  `Description` text COLLATE utf8mb4_unicode_ci,
+			  `PhotographFilename` varchar(1024) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+			  `ReproductionFilename` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Reproduction/Filename',
+			  `Category` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+			  `Material` varchar(1024) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+			  `Artist` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Artist (if any)',
+			  `data` text COLLATE utf8mb4_unicode_ci NOT NULL,
+			  `CollectionName` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Used for debugging; taken from Identification/CollectionName',
+			  `searchKeyword` text COLLATE utf8mb4_unicode_ci COMMENT 'Keyword',
+			  `searchDescription` text COLLATE utf8mb4_unicode_ci COMMENT 'Description search',
+			  `searchPersonOrganisation` text COLLATE utf8mb4_unicode_ci COMMENT 'Person/organisation',
+			  `searchExpedition` text COLLATE utf8mb4_unicode_ci COMMENT 'Expedition',
+			  `searchPlace` text COLLATE utf8mb4_unicode_ci COMMENT 'Place',
+			  `searchSubject` text COLLATE utf8mb4_unicode_ci COMMENT 'Subject',
 			  PRIMARY KEY (`id`),
 			  KEY `Gallery` (`Collection`)
-			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Records (snapshot date: yymmdd)' ROW_FORMAT=DYNAMIC;
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Records (snapshot date: yymmdd)' ROW_FORMAT=DYNAMIC;
 		";
 	}
 	
