@@ -34,6 +34,7 @@ class modesCatalogueApi extends frontControllerApplication
 			'applicationName' => 'MODES catalogue API',
 			'div' => 'modescatalogueapi',
 			'administrators' => true,
+			'tabUlClass' => 'tabsflat',
 			
 			# Importing
 			'importFiles' => array ('records'),	// e.g. array ('museum');
