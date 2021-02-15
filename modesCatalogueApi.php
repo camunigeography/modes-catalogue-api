@@ -1016,7 +1016,7 @@ class modesCatalogueApi extends frontControllerApplication
 	
 	# Function to convert an article ID to a URL slug
 	#!# Needs to be a pluggable callback
-	private function articleIdToUrlSlug ($string, $isMuseumType, $baseUrl, $asFullUrl = false)
+	private function articleIdToUrlSlug ($string, $type, $baseUrl, $asFullUrl = false)
 	{
 		# Lower-case
 		$string = strtolower ($string);
@@ -1036,7 +1036,7 @@ class modesCatalogueApi extends frontControllerApplication
 	
 	# Function to convert a URL slug to an article ID
 	#!# Needs to be a pluggable callback
-	private function urlSlugToArticleId ($string, $isMuseumType)
+	private function urlSlugToArticleId ($string, $type)
 	{
 		# Convert dot to slash
 		$string = str_replace ('.', '/', $string);
