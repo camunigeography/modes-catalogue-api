@@ -16,7 +16,12 @@
 	# Front controller application support
 	Use MacroFrontControllerApplication "$baseUrl/" "Catalogue API"
 	
-	## Application routing:
+	# Page routing
+	RewriteRule ^$baseUrl/(reports)/$ $baseUrl/index.html?action=$1 [L,QSA]
+	RewriteRule ^$baseUrl/(reports)$ $baseUrl/$1/ [L,R]
+	RewriteRule ^$baseUrl/(reports)/([a-z0-9]+)/$ $baseUrl/index.html?action=$1&item=$2 [L,QSA]
+	RewriteRule ^$baseUrl/(reports)/([a-z0-9]+)/page([0-9]+).html$ $baseUrl/index.html?action=$1&item=$2&page=$3 [L,QSA]
+	RewriteRule ^$baseUrl/(reports)/([a-z0-9]+)$ $baseUrl/$1/$2/ [R]
 	
 	# Image serving
 	RewriteRule ^$baseUrl/(images)/([a-z]+)/size([0-9]+)(|square)/(.+)_([1-9][0-9]*)\.jpg$ $baseUrl/index.html?action=$1&namespace=$2&id=$5&index=$6&size=$3&shape=$4 [L,QSA]

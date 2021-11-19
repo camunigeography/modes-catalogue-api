@@ -103,6 +103,13 @@ class modesCatalogueApi extends frontControllerApplication
 				'icon' => 'database_refresh',
 				'administrator' => true,
 			),
+			'reports' => array (
+				'description' => false,
+				'url' => 'reports/',
+				'tab' => 'Data reports',
+				'icon' => 'asterisk_orange',
+				'administrator' => true,
+			),
 			'apidocumentation' => array (
 				'description' => 'API (HTTP)',
 				'url' => 'api/',
@@ -2818,6 +2825,16 @@ class modesCatalogueApi extends frontControllerApplication
 			$draw->annotation (8, $height - 18, $_SERVER['SERVER_NAME']);
 			$imageHandle->drawImage ($draw);
 		}
+	}
+	
+	
+	# Function to list the reports
+	public function reports ($id = false)
+	{
+		# Subclass
+		require_once ('reportsController.php');
+		$reportsController = new reportsController ();
+		echo $reportsController->getHtml ();
 	}
 }
 
