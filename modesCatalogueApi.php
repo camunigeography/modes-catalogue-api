@@ -482,11 +482,10 @@ class modesCatalogueApi extends frontControllerApplication
 		$html = '';
 		
 		# Determine the grouping; examples: 'museum', 'picturelibrary', etc.
-		reset ($modesXmlExportFiles);
-		$grouping = key ($modesXmlExportFiles);		// i.e. first key
+		$grouping = array_key_first ($modesXmlExportFiles);
 		
 		# Determine the import file; e.g. /path/to/modes-catalogue-api/exports/museum20180801.xml
-		$modesXmlExportFile = $modesXmlExportFiles[$grouping];	// i.e. first value
+		$modesXmlExportFile = $modesXmlExportFiles[$grouping];
 		
 		# Get current tables
 		$tables = $this->databaseConnection->getTables ($this->settings['database']);
