@@ -686,6 +686,9 @@ class modesCatalogueApi extends frontControllerApplication
 		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET id = 'kamchatka' WHERE id = 'kam';");
 		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET id = 'scrimshaw' WHERE id = 'scrim';");
 		
+		# Artists
+		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET disableArtists = NULL WHERE id = 'bpa';");
+		
 		# Misc other data fixes
 		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET sponsorNotice = '<p><img src=\"/museum/catalogue/antc/sponsor.jpg\" width=\"250\" alt=\"\" border=\"0\" /></p>' WHERE id = 'antc';");
 	}
