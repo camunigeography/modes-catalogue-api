@@ -521,7 +521,7 @@ class modesCatalogueApi extends frontControllerApplication
 		# Parse the XML records
 		#!# multiplesDelimiter is being compounded, e.g. ||||||||||||||KAM|||||||||||||| gets extra | either side during import each time
 		require_once ('xml.php');
-		$result = xml::databaseChunking (
+		$recordsDone = xml::databaseChunking (
 			$modesXmlExportFile,
 			$credentials = $this->settings,	// Uses hostname, username, password
 			$this->settings['database'],
@@ -541,9 +541,6 @@ class modesCatalogueApi extends frontControllerApplication
 		#!# Race condition problem if two imports for different groupings run concurrently
 		$query = "UPDATE {$this->settings['database']}.{$table} SET `grouping` = '{$grouping}' WHERE `grouping` IS NULL;";
 		$this->databaseConnection->query ($query);
-		
-		# Add to the counter
-		$recordsDone = $result;
 		
 		# Update the table comment to store the data date
 		$tableComment = "Records (snapshot date: ?)";
