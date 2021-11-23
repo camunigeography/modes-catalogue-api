@@ -637,7 +637,7 @@ class modesCatalogueApi extends frontControllerApplication
 		$this->databaseConnection->delete ($this->settings['database'], 'collections', $constraints);
 		
 		# Add collections-level entries for this grouping into the collections table
-		#!# Implementation-specific fixes for sponsorNotice, imagesSubfolder need to be generalised
+		#!# Implementation-specific fixes for imagesSubfolder need to be generalised
 		#!# Status=R: There are 6 different /Administration/Progress/Keyword currently A,B,H,P,R,Y - we currently use R and P; the others need to be documented; Collections are aware of this as of 180524
 		$query = "INSERT INTO {$this->settings['database']}.collections
 			(
@@ -655,7 +655,7 @@ class modesCatalogueApi extends frontControllerApplication
 					NULL AS aboutPageTabText,
 					NULL AS contactsPageHtml,
 					NULL AS contactsPageEmail,
-					IF(id = 'ANTC', '<p><img src=\"/museum/catalogue/antc/sponsor.jpg\" width=\"250\" alt=\"\" border=\"0\" /></p>', NULL) AS sponsorNotice,
+					NULL AS sponsorNotice,
 					NULL AS categoriesTable,
 					1 AS disableCategories,
 					1 AS disableMaterials,
@@ -684,6 +684,9 @@ class modesCatalogueApi extends frontControllerApplication
 		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET id = 'inuitart' WHERE id = 'inua';");
 		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET id = 'kamchatka' WHERE id = 'kam';");
 		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET id = 'scrimshaw' WHERE id = 'scrim';");
+		
+		# Misc other data fixes
+		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET sponsorNotice = '<p><img src=\"/museum/catalogue/antc/sponsor.jpg\" width=\"250\" alt=\"\" border=\"0\" /></p>' WHERE id = 'antc';");
 	}
 	
 	
