@@ -191,7 +191,7 @@ class modesCatalogueApi extends frontControllerApplication
 			  `disableCategories` int DEFAULT NULL COMMENT 'Disable listing of categories',
 			  `disableMaterials` int DEFAULT NULL COMMENT 'Disable listing of materials',
 			  `disableArtists` int DEFAULT NULL COMMENT 'Disable listing of artists',
-			  `imagesSubfolder` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+			  `imagesSubfolder` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Images subfolder',
 			  PRIMARY KEY (`id`)
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Table containing overall application configuration for each ';
 			
