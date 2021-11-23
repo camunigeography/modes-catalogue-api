@@ -1,0 +1,71 @@
+groupings,field,xpath
+
+# Museum and Art
+museum;art,Collection,Administration/Progress/Type
+museum;art,Context,Administration/Progress/Type
+museum;art,Type,Administration/ItemCategory/Type
+museum;art,Status,(Administration/Progress//Keyword)[last()]
+museum;art,ObjectType,Identification/ObjectName[@elementtype = 'simple name']/Keyword
+museum;art,Title,Identification/Title
+museum;art,BriefDescription,Identification/BriefDescription
+museum;art,Description,Description/Aspect/SummaryText
+museum;art,PhotographFilename,Reproduction/ReproductionNumber[@elementtype = 'photograph number']/Number
+museum;art,ReproductionFilename,NULL
+museum;art,Category,Identification/Classification[System='AAT']/Keyword
+museum;art,Material,Description/Material>modesCatalogueApi::materialsSplitterStatic
+museum;art,Artist,Production/Person/PersonName
+museum;art,CollectionName,NULL
+
+# Picture Library
+picturelibrary,Collection,IncludedIn[1]/ObjectIdentity
+picturelibrary,Context,Administration/Progress/Type
+picturelibrary,Type,Administration/ItemCategory/Type
+picturelibrary,Status,(Administration/Progress//Keyword)[last()]
+picturelibrary,ObjectType,NULL
+picturelibrary,Title,(Identification//Title)[last()]
+picturelibrary,BriefDescription,Content/SummaryText
+picturelibrary,Description,Content/Note
+picturelibrary,PhotographFilename,Reproduction/ReproductionNumber/Number[1]
+picturelibrary,ReproductionFilename,NULL
+picturelibrary,Category,NULL
+picturelibrary,Material,NULL
+picturelibrary,Artist,NULL
+picturelibrary,CollectionName,Identification/CollectionName
+
+# Biographies
+biographiesXpaths,name,Content/Person/PersonName
+biographiesXpaths,date,Content/Person/Dates
+biographiesXpaths,alias,Content/Person/Alias/Alias
+biographiesXpaths,rank,Content/Person/Rank
+biographiesXpaths,nationality,Content/Person/Nationality
+biographiesXpaths,awards,Content/Person/Award/Award
+biographiesXpaths,about,Content/Person/SummaryText
+biographiesXpaths,image,Reproduction/ReproductionNumber[@elementtype = 'photograph number']/Number
+biographiesXpaths,collection,Administration/Progress/Type[2]
+
+# Expeditions
+#!# Date should be a range
+#!# leader,Association/Person[contains(Role,'xpedition leader')]/PersonName
+expeditions,name,Content/Event/EventName
+expeditions,date,"concat(Content/Event/Date/DateBegin, '-', Content/Event/Date/DateEnd)"
+expeditions,leader,Association/Person[1]/PersonName
+expeditions,about,Content/SummaryText
+expeditions,collection,Administration/Progress/Type[2]
+
+# Archives
+#!# Administration[ItemCategory='Public access']/ItemCategory/Keyword open vs closed -> R
+#!# Series (fonds) to add - is set as an attribute of the article
+archives,Collection,Administration/ItemCategory/Type
+archives,Context,Administration/ItemCategory/Type
+archives,Type,Administration/ItemCategory[@elementtype ='SPRI_collection']
+archives,Status,Administration[@ItemCategory = 'Public access']/ItemCategory/Keyword
+archives,ObjectType,Identification/Classification/Keyword[1]
+archives,Title,Identification/Title/Title
+archives,BriefDescription,NULL
+archives,Description,Content/SummaryText
+archives,PhotographFilename,Reproduction/ReproductionNumber/Number[1]
+archives,ReproductionFilename,NULL
+archives,Category,Identification/Classification/Keyword[1]
+archives,Material,Description/Material/Keyword
+archives,Artist,NULL
+archives,CollectionName,Identification/CollectionName

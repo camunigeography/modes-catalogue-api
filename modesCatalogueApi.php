@@ -467,10 +467,10 @@ class modesCatalogueApi extends frontControllerApplication
 		);
 		
 		# Define the introduction HTML
-		$fileCreationInstructionsHtml = '<p>Use the export facility in MODES, and save the ' . (count ($this->settings['importFiles']) == 1 ? 'file' : 'files') . ' somewhere on your computer. Note that this can take a while to create.</p>';
+		$fileCreationInstructionsHtml = '<p>Use the export facility in MODES, and save the file somewhere on your computer. Note that this can take a while to create.</p>';
 		
 		# Run the import UI
-		$this->importUi (array_keys ($this->settings['importFiles']), $importTypes, $fileCreationInstructionsHtml);
+		$this->importUi ($this->settings['importFiles'], $importTypes, $fileCreationInstructionsHtml);
 	}
 	
 	
@@ -498,7 +498,8 @@ class modesCatalogueApi extends frontControllerApplication
 		$this->archiveTable ($table, $tables);
 		
 		# Obtain the XPath definitions
-		$xPaths = $this->csvToAssociativeArray ($this->settings['importFiles'][$grouping]);
+		$xPathsByGroup = $this->loadXPathDefinitions ();
+		$xPaths = $xPathsByGroup[$grouping];
 		
 		# xPath configuration; those which are pulled out (as listed below) are either used in indexing lists or checked when searching
 		# https://msdn.microsoft.com/en-us/library/ms256086.aspx is a useful resource
@@ -572,6 +573,28 @@ class modesCatalogueApi extends frontControllerApplication
 	}
 	
 	
+	# Function to load XPath definitions
+	private function loadXPathDefinitions ()
+	{
+		# Load the XPaths
+		require_once ('csv.php');
+		$xPathsCsv = csv::getData ($this->applicationRoot . '/xpaths.csv', $stripKey = false, $hasNoKeys = true, false, $skipCommentLines = true);
+		
+		# Group by grouping
+		$xPaths = array ();
+		foreach ($xPathsCsv as $index => $line) {
+			$groupings = explode (';', $line['groupings']);		// e.g. museum;art or museum
+			foreach ($groupings as $grouping) {
+				if ($line['xpath'] == 'NULL') {continue;}	// Skip fields marked as 'NULL', i.e. do not apply to this kind of record
+				$xPaths[$grouping][ $line['field'] ] = $line['xpath'];
+			}
+		}
+		
+		# Return the definitions
+		return $xPaths;
+	}
+	
+	
 	# Function to archive a previous data table (if not already done on the current day)
 	private function archiveTable ($table, $tables)
 	{
@@ -586,23 +609,6 @@ class modesCatalogueApi extends frontControllerApplication
 		$this->databaseConnection->execute ($sql);
 		$sql = "INSERT INTO {$archiveTable} SELECT * FROM {$table};";
 		$this->databaseConnection->execute ($sql);
-	}
-	
-	
-	# Function to convert a CSV block to an associative array
-	private function csvToAssociativeArray ($string)
-	{
-		# Determine the Xpaths
-		$array = explode ("\n", trim ($string));
-		$list = array ();
-		foreach ($array as $line) {
-			list ($key, $value) = explode (',', trim ($line), 2);
-			if ($value == 'NULL') {continue;}	// Skip fields marked as 'NULL', i.e. do not apply to this kind of record
-			$list[$key] = $value;
-		}
-		
-		# Return the list
-		return $list;
 	}
 	
 	
