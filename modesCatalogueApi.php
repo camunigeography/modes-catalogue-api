@@ -195,29 +195,6 @@ class modesCatalogueApi extends frontControllerApplication
 			  PRIMARY KEY (`id`)
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Table containing overall application configuration for each ';
 			
-			-- Configurations (legacy)
-			CREATE TABLE `configuration` (
-			  `id` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'URL key',
-			  `grouping` enum('Museum','Picture Library','Both') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-			  `suppressed` int DEFAULT NULL COMMENT 'Whether this gallery''s visibility is suppressed in the live catalogue runtime',
-			  `gallery` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Indicator used in MODES XML records',
-			  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-			  `abbreviation` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-			  `introductoryTextBrief` text COLLATE utf8mb4_unicode_ci NOT NULL,
-			  `introductoryText` text COLLATE utf8mb4_unicode_ci COMMENT 'Introductory text',
-			  `aboutPageHtml` text COLLATE utf8mb4_unicode_ci COMMENT 'Full ''about'' page',
-			  `aboutPageTabText` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Text in tab for about page (otherwise will default to ''About'')',
-			  `contactsPageHtml` text COLLATE utf8mb4_unicode_ci COMMENT 'HTML of text on a contact page (or none to represent no page)',
-			  `contactsPageEmail` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'E-mail address used in form',
-			  `sponsorNotice` text COLLATE utf8mb4_unicode_ci COMMENT 'Sponsor notice',
-			  `categoriesTable` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-			  `disableArtists` int DEFAULT NULL COMMENT 'Disable listing of artists',
-			  `disableCategories` int DEFAULT NULL COMMENT 'Disable listing of categories',
-			  `disableMaterials` int DEFAULT NULL COMMENT 'Disable listing of materials',
-			  `imagesSubfolder` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-			  PRIMARY KEY (`id`)
-			) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Table containing overall application configuration for each ';
-			
 			-- Expeditions
 			CREATE TABLE `expeditions` (
 			  `id` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ID',
@@ -628,10 +605,6 @@ class modesCatalogueApi extends frontControllerApplication
 	# Function to handle the creation of the collections table from the Collection-level records
 	private function importCollectionLevelRecords ($grouping)
 	{
-		#!# Need to copy configuration table to collections explicitly - code currently assumes data is present
-		
-		#!# Change precendence to superimpose local AFTER modes
-		
 		# Clear out any present entries from a previous import
 		$constraints = array ('source' => 'modes', 'grouping' => $grouping);
 		$this->databaseConnection->delete ($this->settings['database'], 'collections', $constraints);
@@ -676,11 +649,31 @@ class modesCatalogueApi extends frontControllerApplication
 		$constraints = array ('Type' => 'collection');
 		$this->databaseConnection->delete ($this->settings['database'], $this->settings['table'], $constraints);
 		
+		# Add collections defined manually; these should be added upstream in the source data and removed from this file as they are fixed
+		$this->addManualCollections ();
+		
 		# Convert imagesSubfolder paths from Windows to Unix: prepend the path, convert to forward-slashes, chop off the Windows equivalent of the path, and add the thumbnails directory
 		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET imagesSubfolder = REPLACE (REPLACE (CONCAT (imagesSubfolder, '/'), '\\\\', '/'), 'X:/spripictures/', '/thumbnails/');");
 		
-		# Apply other fixes to data - these should be fixed upstream in the source data and removed from this file as they are fixed
+		# Apply other fixes to data; these should be fixed upstream in the source data and removed from this file as they are fixed
 		$this->collectionsFixes ();
+	}
+	
+	
+	# Function to load collections defined manually
+	private function addManualCollections ()
+	{
+		# Load the fixes data
+		require_once ('csv.php');
+		$fixes = csv::getData ($this->applicationRoot . '/legacy/collections-manual.csv', $stripKey = false, false, false, $skipCommentLines = true);
+		
+		# Clear out any present entries from a previous import
+		$this->databaseConnection->delete ($this->settings['database'], 'collections', array ('source' => 'manual'));
+		
+		# Insert data
+		foreach ($fixes as $fix) {
+			$this->databaseConnection->insert ($this->settings['database'], 'collections', $fix);
+		}
 	}
 	
 	
