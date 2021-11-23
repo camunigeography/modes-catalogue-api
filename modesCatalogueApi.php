@@ -679,18 +679,23 @@ class modesCatalogueApi extends frontControllerApplication
 		# Convert imagesSubfolder paths from Windows to Unix: prepend the path, convert to forward-slashes, chop off the Windows equivalent of the path, and add the thumbnails directory
 		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET imagesSubfolder = REPLACE (REPLACE (CONCAT (imagesSubfolder, '/'), '\\\\', '/'), 'X:/spripictures/', '/thumbnails/');");
 		
-		# Update URLs
-		#!# Need to have monikers in the Collection-level record somewhere, rather than using id directly
-		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET id = 'flags' WHERE id = 'flg';");
-		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET id = 'inuitart' WHERE id = 'inua';");
-		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET id = 'kamchatka' WHERE id = 'kam';");
-		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET id = 'scrimshaw' WHERE id = 'scrim';");
+		# Apply other fixes to data - these should be fixed upstream in the source data and removed from this file as they are fixed
+		$this->collectionsFixes ();
+	}
+	
+	
+	# Function to apply collections fixes
+	private function collectionsFixes ()
+	{
+		# Load the fixes data
+		require_once ('csv.php');
+		$fixes = csv::getData ($this->applicationRoot . '/legacy/collections-fixes.csv', $stripKey = false, $hasNoKeys = true, false, $skipCommentLines = true);
 		
-		# Artists
-		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET disableArtists = NULL WHERE id = 'bpa';");
-		
-		# Misc other data fixes
-		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET sponsorNotice = '<p><img src=\"/museum/catalogue/antc/sponsor.jpg\" width=\"250\" alt=\"\" border=\"0\" /></p>' WHERE id = 'antc';");
+		# Apply the fixes
+		foreach ($fixes as $fix) {
+			$preparedStatementValues = application::arrayFields ($fix, array ('collectionid', 'newvalue'));
+			$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET {$fix['field']} = :newvalue WHERE id = :collectionid;", $preparedStatementValues);
+		}
 	}
 	
 	
