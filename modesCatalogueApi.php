@@ -637,7 +637,6 @@ class modesCatalogueApi extends frontControllerApplication
 		$this->databaseConnection->delete ($this->settings['database'], 'collections', $constraints);
 		
 		# Add collections-level entries for this grouping into the collections table
-		#!# Implementation-specific fixes for imagesSubfolder need to be generalised
 		#!# Status=R: There are 6 different /Administration/Progress/Keyword currently A,B,H,P,R,Y - we currently use R and P; the others need to be documented; Collections are aware of this as of 180524
 		$query = "INSERT INTO {$this->settings['database']}.collections
 			(
@@ -660,8 +659,7 @@ class modesCatalogueApi extends frontControllerApplication
 					1 AS disableCategories,
 					1 AS disableMaterials,
 					1 AS disableArtists,
-						/* Convert the imagesSubfolder reference from Windows to UNIX: prepend the path, convert to unix, chop off the Windows equivalent of the path, and add the thumbnails directory */
-					REPLACE (REPLACE (CONCAT (PhotographFilename, '/'), '\\\\', '/'), 'X:/spripictures/', '/thumbnails/') AS imagesSubfolder
+					PhotographFilename AS imagesSubfolder
 				FROM {$this->settings['database']}.{$this->settings['table']}
 				WHERE
 					    Type = 'collection'
@@ -677,6 +675,9 @@ class modesCatalogueApi extends frontControllerApplication
 		# Delete from the main records table the collection-level entries (irrespective of their Status value)
 		$constraints = array ('Type' => 'collection');
 		$this->databaseConnection->delete ($this->settings['database'], $this->settings['table'], $constraints);
+		
+		# Convert imagesSubfolder paths from Windows to Unix: prepend the path, convert to forward-slashes, chop off the Windows equivalent of the path, and add the thumbnails directory
+		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET imagesSubfolder = REPLACE (REPLACE (CONCAT (imagesSubfolder, '/'), '\\\\', '/'), 'X:/spripictures/', '/thumbnails/');");
 		
 		# Update URLs
 		#!# Need to have monikers in the Collection-level record somewhere, rather than using id directly
