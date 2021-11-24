@@ -12,7 +12,7 @@ museum;art,Description,Description/Aspect/SummaryText
 museum;art,PhotographFilename,Reproduction/ReproductionNumber[@elementtype = 'photograph number']/Number
 museum;art,ReproductionFilename,NULL
 museum;art,Category,Identification/Classification[System='AAT']/Keyword
-museum;art,Material,Description/Material>modesCatalogueApi::materialsSplitterStatic
+museum;art,Material,Description/Material>import::materialsSplitterStatic
 museum;art,Artist,Production/Person/PersonName
 museum;art,CollectionName,NULL
 
