@@ -78,9 +78,10 @@ class import
 		);
 		
 		# Insert the data, converting an INSERT to an UPDATE when the id exists already
-		foreach ($records as $key => $data) {
-			if (!$this->databaseConnection->insert ($this->settings['database'], $table, $data, true)) {
-				$html .= "\n<p class=\"warning\">ERROR: There was a problem inserting the data into the database. MySQL said:</p>";
+		#!# Not clear why ON DUPLICATE KEY UPDATE should be necessary, given the delete() clearance above
+		foreach ($records as $key => $record) {
+			if (!$this->databaseConnection->insert ($this->settings['database'], $table, $record, true)) {
+				$html .= "\n<p class=\"warning\">ERROR: There was a problem inserting the record into the database. MySQL said:</p>";
 				$html .= application::dumpData ($this->databaseConnection->error (), false, $return = true);
 				return false;
 			}
