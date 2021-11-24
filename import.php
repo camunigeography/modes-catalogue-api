@@ -41,7 +41,7 @@ class import
 		$table = ($isGroupingSpecific ? $grouping : $this->settings['table']);
 		
 		# Archive off the previous data (if not already done on the current day)
-		$this->archiveTable ($table, $tables);
+		$this->databaseConnection->archiveTable ($table, $tables);
 		
 		# Obtain the XPath definitions
 		$xPathsByGroup = $this->loadXPathDefinitions ();
@@ -122,23 +122,6 @@ class import
 		
 		# Signal success
 		return true;
-	}
-	
-	
-	# Function to archive a previous data table (if not already done on the current day)
-	private function archiveTable ($table, $tables)
-	{
-		# Determine the proposed archive table name, as <table>_<dateYmd>, e.g. records_180801
-		$archiveTable = $table . '_' . date ('Ymd');
-		
-		# Do not archive if the table already exists
-		if (in_array ($archiveTable, $tables)) {return;}
-		
-		# Archive the data, by creating the table and copying the data in
-		$sql = "CREATE TABLE {$archiveTable} LIKE {$table};";
-		$this->databaseConnection->execute ($sql);
-		$sql = "INSERT INTO {$archiveTable} SELECT * FROM {$table};";
-		$this->databaseConnection->execute ($sql);
 	}
 	
 	
