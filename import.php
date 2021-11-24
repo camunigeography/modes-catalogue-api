@@ -4,11 +4,12 @@
 class import
 {
 	# Constructor
-	public function __construct ($settings, $databaseConnection, $applicationRoot)
+	public function __construct ($settings, $databaseConnection, $baseUrl, $applicationRoot)
 	{
 		# Resource handles
 		$this->settings = $settings;
 		$this->databaseConnection = $databaseConnection;
+		$this->baseUrl = $baseUrl;
 		$this->applicationRoot = $applicationRoot;
 		
 		# Load required libraries

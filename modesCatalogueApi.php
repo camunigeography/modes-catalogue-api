@@ -456,7 +456,7 @@ class modesCatalogueApi extends frontControllerApplication
 	public function doImport ($modesXmlExportFiles, $type_ignored, &$html)
 	{
 		require_once ('import.php');
-		$import = new import ($this->settings, $this->databaseConnection, $this->applicationRoot);
+		$import = new import ($this->settings, $this->databaseConnection, $this->baseUrl, $this->applicationRoot);
 		return $import->run ($modesXmlExportFiles, $type_ignored, $html);
 	}
 	
