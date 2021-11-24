@@ -11,6 +11,10 @@ class import
 		$this->databaseConnection = $databaseConnection;
 		$this->applicationRoot = $applicationRoot;
 		
+		# Load required libraries
+		require_once ('xml.php');
+		require_once ('csv.php');
+		
 	}
 	
 	
@@ -61,7 +65,6 @@ class import
 		
 		# Parse the XML records
 		#!# multiplesDelimiter is being compounded, e.g. ||||||||||||||KAM|||||||||||||| gets extra | either side during import each time
-		require_once ('xml.php');
 		$records = xml::recordParser (
 			$modesXmlExportFile,
 			$xpathRecordsRoot = '/Interchange/Object',
@@ -141,7 +144,6 @@ class import
 	private function loadXPathDefinitions ()
 	{
 		# Load the XPaths
-		require_once ('csv.php');
 		$xPathsCsv = csv::getData ($this->applicationRoot . '/xpaths.csv', $stripKey = false, $hasNoKeys = true, false, $skipCommentLines = true);
 		
 		# Group by grouping
@@ -284,7 +286,6 @@ class import
 	private function addManualCollections ()
 	{
 		# Load the fixes data
-		require_once ('csv.php');
 		$fixes = csv::getData ($this->applicationRoot . '/legacy/collections-manual.csv', $stripKey = false, false, false, $skipCommentLines = true);
 		
 		# Clear out any present entries from a previous import
@@ -301,7 +302,6 @@ class import
 	private function collectionsFixes ()
 	{
 		# Load the fixes data
-		require_once ('csv.php');
 		$fixes = csv::getData ($this->applicationRoot . '/legacy/collections-fixes.csv', $stripKey = false, $hasNoKeys = true, false, $skipCommentLines = true);
 		
 		# Apply the fixes
