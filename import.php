@@ -78,7 +78,7 @@ class import
 			$filter = (isSet ($this->settings['filter'][$grouping]) ? $this->settings['filter'][$grouping] : false)
 		);
 		
-		# Insert the data, converting an INSERT to an UPDATE when the id exists already
+		# Insert the data, converting an INSERT to an UPDATE when the id exists already; insertMany cannot be used as records may fail the arrayFieldsConsistent check
 		#!# Not clear why ON DUPLICATE KEY UPDATE should be necessary, given the delete() clearance above
 		foreach ($records as $key => $record) {
 			if (!$this->databaseConnection->insert ($this->settings['database'], $table, $record, true)) {
