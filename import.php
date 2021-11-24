@@ -57,16 +57,13 @@ class import
 		# Delete records of this grouping from the table first
 		$this->databaseConnection->delete ($this->settings['database'], $table, array ('grouping' => $grouping));
 		
-		#!# Migrate functions to using PHP 5.3 callback system: https://stackoverflow.com/a/3409450
+		#!# Migrate callback to using PHP 5.3 callback system: https://stackoverflow.com/a/3409450
 		
 		# Parse the XML records
 		#!# multiplesDelimiter is being compounded, e.g. ||||||||||||||KAM|||||||||||||| gets extra | either side during import each time
 		require_once ('xml.php');
-		$recordsDone = xml::databaseChunking (
+		$records = xml::recordParser (
 			$modesXmlExportFile,
-			$credentials = $this->settings,	// Uses hostname, username, password
-			$this->settings['database'],
-			$table,
 			$xpathRecordsRoot = '/Interchange/Object',
 			$recordIdPath = 'ObjectIdentity/Number',
 			$xPaths,
@@ -76,6 +73,18 @@ class import
 			300,	/* Default */
 			$filter = (isSet ($this->settings['filter'][$grouping]) ? $this->settings['filter'][$grouping] : false)
 		);
+		
+		# Insert the data, converting an INSERT to an UPDATE when the id exists already
+		foreach ($records as $key => $data) {
+			if (!$this->databaseConnection->insert ($this->settings['database'], $table, $data, true)) {
+				$html .= "\n<p class=\"warning\">ERROR: There was a problem inserting the data into the database. MySQL said:</p>";
+				$html .= application::dumpData ($this->databaseConnection->error (), false, $return = true);
+				return false;
+			}
+		}
+		
+		# Count records inserted
+		$recordsDone = count ($records);
 		
 		# Add the grouping
 		#!# Ideally this would work using an XPath "string('{$grouping}')" but that seems not to work
