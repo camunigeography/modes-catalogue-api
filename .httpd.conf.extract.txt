@@ -41,7 +41,7 @@
 		Require valid-user
 	</LocationMatch>
 	
-	# High memory required for import upload
+	# High memory required for import upload, as the XML is a single file
 	<Location $baseUrl/import/>
 		php_value upload_max_filesize 1000M
 		php_value post_max_size 1000M
