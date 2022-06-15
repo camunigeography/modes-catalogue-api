@@ -403,11 +403,15 @@ class articleModel
 		# End if not present
 		if (!isSet ($article['Identification']) || !isSet ($article['Identification']['ObjectName']) || !isSet ($article['Identification']['ObjectName']['Keyword'])) {return NULL;}
 		
-		# Obtain the object type
-		$objectType = $article['Identification']['ObjectName']['Keyword'];
+		# Obtain the object name
+		if (is_array ($article['Identification']['ObjectName']['Keyword']) && isSet ($article['Identification']['ObjectName']['Keyword']['Keyword'])) {
+			$objectName = $article['Identification']['ObjectName']['Keyword']['Keyword'];	// Happens when /Note present, e.g. /article/y2010.52.4/
+		} else {
+			$objectName = $article['Identification']['ObjectName']['Keyword'];
+		}
 		
-		# Return the object type
-		return $objectType;
+		# Return the object name
+		return $objectName;
 	}
 	
 	
