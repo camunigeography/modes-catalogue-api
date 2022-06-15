@@ -584,7 +584,7 @@ class modesCatalogueApi extends frontControllerApplication
 	
 	
 	# Function to get biography data
-	public function getBiographyData ($baseUrl, $collection, $id = false, $fields = array (), $imageSize, $baseUrlExpeditions = false, $random = false, $forceId = false)
+	public function getBiographyData ($baseUrl, $collectionId, $id = false, $fields = array (), $imageSize, $baseUrlExpeditions = false, $random = false, $forceId = false)
 	{
 		# Determine which database function to use
 		$databaseFunction = ($id ? 'selectOne' : 'select');
@@ -594,8 +594,9 @@ class modesCatalogueApi extends frontControllerApplication
 		if ($id) {
 			$conditions['id'] = $id;
 		}
-		if ($collection) {
-			$conditions['collection'] = $collection;
+		#!# This is sometimes receiving the special token '?' as a value
+		if ($collectionId) {
+			$conditions['collection'] = $collectionId;
 		}
 		
 		# Randomise, if required
@@ -759,7 +760,7 @@ class modesCatalogueApi extends frontControllerApplication
 	
 	
 	# Function to get expedition data
-	public function getExpeditionData ($baseUrl, $collection, $id = false, $fields = array ())
+	public function getExpeditionData ($baseUrl, $collectionId, $id = false, $fields = array ())
 	{
 		# Determine which database function to use
 		$databaseFunction = ($id ? 'selectOne' : 'select');
@@ -769,8 +770,8 @@ class modesCatalogueApi extends frontControllerApplication
 		if ($id) {
 			$conditions['id'] = $id;
 		}
-		if ($collection) {
-			$conditions['collection'] = $collection;
+		if ($collectionId) {
+			$conditions['collection'] = $collectionId;
 		}
 		
 		# Get the data or end

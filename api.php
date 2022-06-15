@@ -270,7 +270,7 @@ class api
 		$baseUrlArticles = (isSet ($_GET['baseUrlArticles']) ? $_GET['baseUrlArticles'] : false);
 		
 		# Filter to a specified collection if required
-		$collection = (isSet ($_GET['collection']) && strlen ($_GET['collection']) ? $_GET['collection'] : false);
+		$collectionId = (isSet ($_GET['collection']) && strlen ($_GET['collection']) ? $_GET['collection'] : false);
 		
 		# Specify a search phrase if required
 		$search = false;
@@ -282,7 +282,7 @@ class api
 		};
 		
 		# Ensure either a collection or a search`	 has been specified
-		if (!$collection && !$search) {
+		if (!$collectionId && !$search) {
 			return array ('error' => 'At least a collection or a search phrase must be specified.');
 		}
 		
@@ -320,7 +320,7 @@ class api
 		ini_set ('display_errors', false);	// #!# Ensure any errors do not disrupt API output
 		require_once ('articleModel.php');
 		$articleModel = new articleModel ($this->modesCatalogueApi, $this->settings, $this->databaseConnection);
-		$data = $articleModel->getArticlesData ($baseUrl, $collection, $imageSize, $imageShape, $search, $category, $material, $artist, $requireImages, $random, $page);
+		$data = $articleModel->getArticlesData ($baseUrl, $collectionId, $imageSize, $imageShape, $search, $category, $material, $artist, $requireImages, $random, $page);
 		
 		# Construct URLs
 		foreach ($data['articles'] as $id => $article) {
@@ -675,7 +675,7 @@ class api
 		$baseUrlExpeditions = (isSet ($_GET['baseUrlExpeditions']) ? $_GET['baseUrlExpeditions'] : false);
 		
 		# Filter to a specified collection if required
-		$collection = (isSet ($_GET['collection']) && strlen ($_GET['collection']) ? $_GET['collection'] : false);
+		$collectionId = (isSet ($_GET['collection']) && strlen ($_GET['collection']) ? $_GET['collection'] : false);
 		
 		# Obtain a specified number of articles selected at random
 		$random = (isSet ($_GET['random']) && ctype_digit ($_GET['random']) ? $_GET['random'] : false);
@@ -691,7 +691,7 @@ class api
 		
 		# Get the data
 		$fields = array ('id', 'name', 'rank', 'image');
-		$data = $this->modesCatalogueApi->getBiographyData ($baseUrl, $collection, false, $fields, $imageSize, $baseUrlExpeditions, $random, $forceId);
+		$data = $this->modesCatalogueApi->getBiographyData ($baseUrl, $collectionId, false, $fields, $imageSize, $baseUrlExpeditions, $random, $forceId);
 		
 		# Return the data, which will be JSON-encoded
 		return $data;
@@ -812,7 +812,8 @@ class api
 		
 		# Get the record data
 		$fields = array ('id', 'name', 'date', 'alias', 'rank', 'nationality', 'awards', 'about', 'data', 'collection', 'image');
-		if (!$data = $this->modesCatalogueApi->getBiographyData ($baseUrl, $collection, $_GET['id'], $fields, $imageSize, $baseUrlExpeditions)) {
+		#!# $collectionId does not exist
+		if (!$data = $this->modesCatalogueApi->getBiographyData ($baseUrl, $collectionId, $_GET['id'], $fields, $imageSize, $baseUrlExpeditions)) {
 			return array ('error' => 'There is no such record ID.');
 		}
 		
@@ -927,11 +928,11 @@ class api
 		$baseUrl = (isSet ($_GET['baseUrl']) ? $_GET['baseUrl'] : false);
 		
 		# Filter to a specified collection if required
-		$collection = (isSet ($_GET['collection']) && strlen ($_GET['collection']) ? $_GET['collection'] : false);
+		$collectionId = (isSet ($_GET['collection']) && strlen ($_GET['collection']) ? $_GET['collection'] : false);
 		
 		# Get the data
 		$fields = array ('id', 'name', 'date', 'leader', 'about');
-		$data = $this->modesCatalogueApi->getExpeditionData ($baseUrl, $collection, false, $fields);
+		$data = $this->modesCatalogueApi->getExpeditionData ($baseUrl, $collectionId, false, $fields);
 		
 		# Return the data, which will be JSON-encoded
 		return $data;
@@ -1021,7 +1022,8 @@ class api
 		
 		# Get the record data
 		$fields = array ('id', 'name', 'date', 'leader', 'about', 'data', 'collection');
-		if (!$data = $this->modesCatalogueApi->getExpeditionData ($baseUrl, $collection, $_GET['id'], $fields)) {
+		#!# CollectionId does not exist
+		if (!$data = $this->modesCatalogueApi->getExpeditionData ($baseUrl, $collectionId, $_GET['id'], $fields)) {
 			return array ('error' => 'There is no such record ID.');
 		}
 		
@@ -1036,7 +1038,8 @@ class api
 		# Get all the biographies
 		#!# Need to add support in getBiographyData for getting a list of IDs, to avoid pointless lookup of people not present in the expedition
 		#!# Fields needs to be filterable
-		$allBiographies = $this->modesCatalogueApi->getBiographyData ($baseUrlPeople, $collection, false, $fields = array (/* 'link', 'image' */), $imageSize);
+		#!# CollectionId does not exist
+		$allBiographies = $this->modesCatalogueApi->getBiographyData ($baseUrlPeople, $collectionId, false, $fields = array (/* 'link', 'image' */), $imageSize);
 		
 		# Extract people
 		$data['people'] = array ();
