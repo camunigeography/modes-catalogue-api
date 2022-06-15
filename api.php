@@ -812,8 +812,7 @@ class api
 		
 		# Get the record data
 		$fields = array ('id', 'name', 'date', 'alias', 'rank', 'nationality', 'awards', 'about', 'data', 'collection', 'image');
-		#!# $collectionId does not exist
-		if (!$data = $this->modesCatalogueApi->getBiographyData ($baseUrl, $collectionId, $_GET['id'], $fields, $imageSize, $baseUrlExpeditions)) {
+		if (!$data = $this->modesCatalogueApi->getBiographyData ($baseUrl, false, $_GET['id'], $fields, $imageSize, $baseUrlExpeditions)) {
 			return array ('error' => 'There is no such record ID.');
 		}
 		
@@ -1022,8 +1021,7 @@ class api
 		
 		# Get the record data
 		$fields = array ('id', 'name', 'date', 'leader', 'about', 'data', 'collection');
-		#!# CollectionId does not exist
-		if (!$data = $this->modesCatalogueApi->getExpeditionData ($baseUrl, $collectionId, $_GET['id'], $fields)) {
+		if (!$data = $this->modesCatalogueApi->getExpeditionData ($baseUrl, false, $_GET['id'], $fields)) {
 			return array ('error' => 'There is no such record ID.');
 		}
 		
@@ -1038,8 +1036,7 @@ class api
 		# Get all the biographies
 		#!# Need to add support in getBiographyData for getting a list of IDs, to avoid pointless lookup of people not present in the expedition
 		#!# Fields needs to be filterable
-		#!# CollectionId does not exist
-		$allBiographies = $this->modesCatalogueApi->getBiographyData ($baseUrlPeople, $collectionId, false, $fields = array (/* 'link', 'image' */), $imageSize);
+		$allBiographies = $this->modesCatalogueApi->getBiographyData ($baseUrlPeople, false, false, $fields = array (/* 'link', 'image' */), $imageSize);
 		
 		# Extract people
 		$data['people'] = array ();
