@@ -666,14 +666,14 @@ class modesCatalogueApi extends frontControllerApplication
 			}
 			
 			# Extract expeditions
-			$data['expeditions'] = array ();
-			foreach ($metadata['Association'] as $event) {
-				#!# Check for $event['Event'][EventType] == 'Antarctic expedition' ?
-				if (!isSet ($event['Event'])) {continue;}
+			foreach ($metadata['Association'] as $association) {
+				#!# Check for ($association['Event'][EventType] == 'Antarctic expedition') ?
+				if (!isSet ($association['Event'])) {continue;}
+				$event = $association['Event'];
 				$data['expeditions'][] = array (
-					'title' => $event['Event']['EventName'],
-					'date' => $event['Event']['Date']['DateBegin'] . '-' . $event['Event']['Date']['DateEnd'],
-					'link' => $expeditions[$event['Event']['EventName']],
+					'title' => $event['EventName'],
+					'date' => (isSet ($event['Date']) && is_string ($event['Date']['DateBegin']) ? $event['Date']['DateBegin'] . '-' . $event['Date']['DateEnd'] : NULL),
+					'link' => (is_string ($event['EventName']) && isSet ($expeditions[$event['EventName']]) ? $expeditions[$event['EventName']] : NULL),
 					'image' => NULL,
 				);
 			}
