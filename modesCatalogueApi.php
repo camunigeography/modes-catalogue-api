@@ -977,7 +977,7 @@ class modesCatalogueApi extends frontControllerApplication
 	
 	
 	# Function to write a thumbnail
-	public function writeThumbnail ($file, $size, $shape, $thumbnailFile, /* Variables needed for workaround for legacy records without path: */ $namespace, $recordId, &$errorText = false)
+	public function writeThumbnail ($file, $size, $shape, $thumbnailFile, /* Variables needed for workaround for legacy records without path: */ $namespace, $recordId, &$errorText = false, &$errorCode = false)
 	{
 		# Determine the file location from the database-stored value
 		$file = $this->imageServerPath ($file, /* Variables needed for workaround for legacy records without path: */ $namespace, $recordId);
@@ -991,6 +991,7 @@ class modesCatalogueApi extends frontControllerApplication
 		# End if the file still cannot be found
 		if (!file_exists ($file)) {
 			$errorText = "ERROR: Unable to create thumbnail as the referenced file ($file) could not be located.";
+			$errorCode = 'UNLOCATABLE_SOURCE_IMAGE';
 			return false;
 		}
 		

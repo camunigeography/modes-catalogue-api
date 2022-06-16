@@ -3,3 +3,4 @@ exports/*
 !exports/.gitignore
 exports-tmp/*
 !exports-tmp/.gitignore
+unlocatable-image-files.txt

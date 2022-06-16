@@ -1077,7 +1077,15 @@ class articleModel
 			
 			# If the thumbnail file does not yet exist, generate it
 			if (!file_exists ($thumbnailFile)) {
-				$this->modesCatalogueApi->writeThumbnail ($image, $size, $shape, $thumbnailFile, /* Variables needed for workaround for legacy records without path: */ $namespace = 'records', $record['id']);
+				if (!$this->modesCatalogueApi->writeThumbnail ($image, $size, $shape, $thumbnailFile, /* Variables needed for workaround for legacy records without path: */ $namespace = 'records', $record['id'], $errorText /* returned by reference */, $errorCode /* returned by reference */)) {
+					
+					# Capture unreadable path failures, so these can be fixed in the data or directory prefixes registered
+					if ($errorCode == 'UNLOCATABLE_SOURCE_IMAGE') {
+						$logFile = $this->modesCatalogueApi->applicationRoot . '/unlocatable-image-files.txt';
+						$logEntry = $record['id'] . ',' . $record['Collection'] . ',' . $image . "\n";
+						file_put_contents ($logFile, $logEntry, FILE_APPEND);
+					}
+				}
 			}
 			
 			# Get the dimensions of the thumbnail file
