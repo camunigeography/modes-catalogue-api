@@ -1089,7 +1089,13 @@ class articleModel
 			}
 			
 			# Get the dimensions of the thumbnail file
-			list ($width, $height, $type_ignored, $attributes_ignored) = getimagesize ($thumbnailFile);
+			# If the file is not found, the likely cause is an UNLOCATABLE_SOURCE_IMAGE failure as above, but the API should transmit the image that would be present when the path has been fixed up; i.e. treat this as a file read -level error, not an absence of an image entirely; the errors are logged above
+			if (file_exists ($thumbnailFile)) {
+				list ($width, $height, $type_ignored, $attributes_ignored) = getimagesize ($thumbnailFile);
+			} else {
+				$width = NULL;
+				$height = NULL;
+			}
 			
 			# Register the image details
 			$images[$index] = array (
