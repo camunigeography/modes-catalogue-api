@@ -622,7 +622,7 @@ class modesCatalogueApi extends frontControllerApplication
 		
 		# Decorate each entry
 		$expeditionsRaw = $this->getExpeditionData (false, false, false, array ('id', 'name'));
-		if ($id) {
+		if ($id && is_string ($id)) {
 			$data = $this->decorateBiography ($data, $baseUrl, $imageSize, $expeditionsRaw, $baseUrlExpeditions);
 		} else {
 			foreach ($data as $key => $record) {

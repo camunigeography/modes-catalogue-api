@@ -1033,19 +1033,26 @@ class api
 		#!# Remove when fixed by MySQL 8 upgrade: https://stackoverflow.com/questions/30090221/mysql-xpath-concatenation-operator-how-to-add-space
 		$data['date'] = $metadata['Content']['Event']['Date']['DateBegin'] . '-' . $metadata['Content']['Event']['Date']['DateEnd'];
 		
+		# Get the list of people to extract
+		$peopleIds = array ();
+		foreach ($metadata['Association']['Person'] as $person) {
+			$peopleIds[] = $person['PersonName'];
+		}
+		
 		# Get all the biographies
 		#!# Need to add support in getBiographyData for getting a list of IDs, to avoid pointless lookup of people not present in the expedition
 		#!# Fields needs to be filterable
-		$allBiographies = $this->modesCatalogueApi->getBiographyData ($baseUrlPeople, false, false, $fields = array (/* 'link', 'image' */), $imageSize);
+		$biographies = $this->modesCatalogueApi->getBiographyData ($baseUrlPeople, false, $peopleIds, $fields = array (/* 'link', 'image' */), $imageSize);
 		
 		# Extract people
 		$data['people'] = array ();
 		foreach ($metadata['Association']['Person'] as $person) {
+			$name = $person['PersonName'];
 			$data['people'][] = array (
-				'name' => $person['PersonName'],
+				'name' => $name,
 				'role' => $person['Role'],
-				'link' => $allBiographies[$person['PersonName']]['link'],
-				'image' => $allBiographies[$person['PersonName']]['image'],
+				'link' => $biographies[$name]['link'],
+				'image' => $biographies[$name]['image'],
 			);
 		}
 		
