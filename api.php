@@ -508,14 +508,21 @@ class api
 		if (isSet ($data['associatedPerson'])) {
 			if ($data['associatedPerson']) {
 				
-				# Attach the URL if present
-				foreach ($data['associatedPerson'] as $index => $person) {
-					$data['associatedPerson'][$index]['link'] = $this->urlFromId ($person['name'], $baseUrlPeople);
+				# Get the list of people to extract
+				$peopleIds = array ();
+				foreach ($data['associatedPerson'] as $person) {
+					$peopleIds[] = $person['name'];
 				}
+
+				# Get all the biographies
+				#!# If $collectionId = '?' this will not produce matches
+				$biographies = $this->modesCatalogueApi->getBiographyData ($baseUrlPeople, $collectionId, $peopleIds, $fields = array (/* 'link', 'image' */), $imageSizeBiographies = 300);
 				
-				# Attach the image
+				# Attach the link and image if present
 				foreach ($data['associatedPerson'] as $index => $person) {
-					$data['associatedPerson'][$index]['image'] = NULL;
+					$name = $person['name'];
+					$data['associatedPerson'][$index]['link'] = (isSet ($biographies[$name]) ? $biographies[$name]['link'] : '#');		// If missing, # will be used, which indicates a data error
+					$data['associatedPerson'][$index]['image'] = (isSet ($biographies[$name]) ? $biographies[$name]['image'] : '#');	// If missing, # will be used, which indicates a data error
 				}
 			}
 		}
