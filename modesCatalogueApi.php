@@ -671,9 +671,9 @@ class modesCatalogueApi extends frontControllerApplication
 				if (!isSet ($association['Event'])) {continue;}
 				$event = $association['Event'];
 				$data['expeditions'][] = array (
-					'title' => $event['EventName'],
+					'title' => $event['EventIdentity'],
 					'date' => (isSet ($event['Date']) && is_string ($event['Date']['DateBegin']) ? $event['Date']['DateBegin'] . '-' . $event['Date']['DateEnd'] : NULL),
-					'link' => (is_string ($event['EventName']) && isSet ($expeditions[$event['EventName']]) ? $expeditions[$event['EventName']] : NULL),
+					'link' => (is_string ($event['EventIdentity']) && isSet ($expeditions[$event['EventIdentity']]) ? $expeditions[$event['EventIdentity']] : NULL),
 					'image' => NULL,
 				);
 			}
