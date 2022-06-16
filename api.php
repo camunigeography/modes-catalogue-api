@@ -1051,8 +1051,8 @@ class api
 			$data['people'][] = array (
 				'name' => $name,
 				'role' => $person['Role'],
-				'link' => $biographies[$name]['link'],
-				'image' => $biographies[$name]['image'],
+				'link' => (isSet ($biographies[$name]) ? $biographies[$name]['link'] : '#'),		// If missing, # will be used, which indicates a data error
+				'image' => (isSet ($biographies[$name]) ? $biographies[$name]['image'] : '#'),		// If missing, # will be used, which indicates a data error
 			);
 		}
 		
