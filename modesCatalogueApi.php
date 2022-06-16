@@ -587,12 +587,12 @@ class modesCatalogueApi extends frontControllerApplication
 	public function getBiographyData ($baseUrl, $collectionId, $id = false, $fields = array (), $imageSize, $baseUrlExpeditions = false, $random = false, $forceId = false)
 	{
 		# Determine which database function to use
-		$databaseFunction = ($id ? 'selectOne' : 'select');
+		$databaseFunction = ($id && is_string ($id) ? 'selectOne' : 'select');
 		
 		# Add limitations
 		$conditions = array ();
 		if ($id) {
-			$conditions['id'] = $id;
+			$conditions['id'] = $id;	// May be an array, which the database library will treat as IN()
 		}
 		#!# This is sometimes receiving the special token '?' as a value
 		if ($collectionId) {
