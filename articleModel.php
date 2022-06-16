@@ -1045,7 +1045,7 @@ class articleModel
 		$associations = array ();
 		foreach ($article['Association'] as $index => $association) {
 			if ($association) {
-				if ($association['@attributes']['elementtype'] != $elementType) {continue;}
+				if (!isSet ($association['@attributes']) || ($association['@attributes']['elementtype'] != $elementType)) {continue;}
 				if (!strlen ($association[$container][$innerContainer])) {continue;}
 				$associations[] = array (
 					'type' => $association['Type'],
