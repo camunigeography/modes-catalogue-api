@@ -33,15 +33,15 @@ picturelibrary,Artist,NULL
 picturelibrary,CollectionName,Identification/CollectionName
 
 # Biographies
-biographiesXpaths,name,Content/Person/PersonName
-biographiesXpaths,date,Content/Person/Dates
-biographiesXpaths,alias,Content/Person/Alias/Alias
-biographiesXpaths,rank,Content/Person/Rank
-biographiesXpaths,nationality,Content/Person/Nationality
-biographiesXpaths,awards,Content/Person/Award/Award
-biographiesXpaths,about,Content/Person/SummaryText
-biographiesXpaths,image,Reproduction/ReproductionNumber[@elementtype = 'photograph number']/Number
-biographiesXpaths,collection,Administration/Progress/Type[2]
+biographies,name,Content/Person/PersonName
+biographies,date,Content/Person/Dates
+biographies,alias,Content/Person/Alias/Alias
+biographies,rank,Content/Person/Rank
+biographies,nationality,Content/Person/Nationality
+biographies,awards,Content/Person/Award/Award
+biographies,about,Content/Person/SummaryText
+biographies,image,Reproduction/ReproductionNumber[@elementtype = 'photograph number']/Number
+biographies,collection,Administration/Progress/Type[2]
 
 # Expeditions
 #!# Date should be a range
