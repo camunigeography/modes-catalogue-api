@@ -1,5 +1,7 @@
 <?php
 
+#!# *Name fields have become: EventIdentity / PersonIdentity / OrganisationIdentity
+
 # Article model class for the MODES catalogue viewer
 class articleModel
 {

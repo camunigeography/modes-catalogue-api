@@ -1043,7 +1043,7 @@ class api
 		# Get the list of people to extract
 		$peopleIds = array ();
 		foreach ($metadata['Association']['Person'] as $person) {
-			$peopleIds[] = $person['PersonName'];
+			$peopleIds[] = $person['PersonIdentity'];
 		}
 		
 		# Get all the biographies
@@ -1054,7 +1054,7 @@ class api
 		# Extract people
 		$data['people'] = array ();
 		foreach ($metadata['Association']['Person'] as $person) {
-			$name = $person['PersonName'];
+			$name = $person['PersonIdentity'];
 			$data['people'][] = array (
 				'name' => $name,
 				'role' => $person['Role'],
