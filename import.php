@@ -239,7 +239,8 @@ class import
 					1 AS disableCategories,
 					1 AS disableMaterials,
 					1 AS disableArtists,
-					PhotographFilename AS imagesSubfolder
+					PhotographFilename AS imagesSubfolder,
+					NULL AS coverImage
 				FROM {$this->settings['database']}.{$this->settings['table']}
 				WHERE
 					    Type = 'collection'
@@ -259,8 +260,21 @@ class import
 		# Add collections defined manually; these should be added upstream in the source data and removed from this file as they are fixed
 		$this->addManualCollections ();
 		
-		# Convert imagesSubfolder paths from Windows to Unix: prepend the path, convert to forward-slashes, chop off the Windows equivalent of the path, and add the thumbnails directory
-		$this->databaseConnection->query ("UPDATE {$this->settings['database']}.collections SET imagesSubfolder = REPLACE (REPLACE (CONCAT (imagesSubfolder, '/'), '\\\\', '/'), 'X:/spripictures/', '/thumbnails/');");
+		# Convert image path from Windows to Unix: convert to forward-slashes and add the thumbnails directory
+		$query = "UPDATE {$this->settings['database']}.collections SET imagesSubfolder = REPLACE (REPLACE (imagesSubfolder, '\\\\', '/'), 'X:/spripictures/', '/thumbnails/');";
+		$this->databaseConnection->query ($query);
+		
+		# Set the cover image based on the image subfolder
+		$query = "UPDATE collections SET coverImage = imagesSubfolder WHERE imagesSubfolder REGEXP '\.(tif|TIF|tiff|TIFF|jpg|JPG)$';";
+		$this->databaseConnection->query ($query);
+		
+		# Convert images subfolder to path only, i.e. remove image filename part
+		$query = "UPDATE collections SET imagesSubfolder = TRIM(TRAILING SUBSTRING_INDEX(imagesSubfolder, '/', -1) FROM imagesSubfolder) WHERE imagesSubfolder REGEXP '\.(tif|TIF|tiff|TIFF|jpg|JPG)$';";
+		$this->databaseConnection->query ($query);
+		
+		# Normalise final trailing slash for images subfolder when not present
+		$query = "UPDATE collections SET imagesSubfolder = CONCAT(imagesSubfolder, '/') WHERE RIGHT(imagesSubfolder, 1) != '/';";
+		$this->databaseConnection->query ($query);
 		
 		# Apply other fixes to data; these should be fixed upstream in the source data and removed from this file as they are fixed
 		$this->collectionsFixes ();

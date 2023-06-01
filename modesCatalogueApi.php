@@ -192,6 +192,7 @@ class modesCatalogueApi extends frontControllerApplication
 			  `disableMaterials` int DEFAULT NULL COMMENT 'Disable listing of materials',
 			  `disableArtists` int DEFAULT NULL COMMENT 'Disable listing of artists',
 			  `imagesSubfolder` varchar(255) DEFAULT NULL COMMENT 'Images subfolder',
+			  `coverImage` varchar(255) DEFAULT NULL COMMENT 'Cover image',
 			  PRIMARY KEY (`id`)
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Table containing overall application configuration for each ';
 			
@@ -1091,11 +1092,13 @@ class modesCatalogueApi extends frontControllerApplication
 		$paths = $this->databaseConnection->selectPairs ($this->settings['database'], 'collections', $constraint, array ('imagesSubfolder'));
 		
 		# Remove thumbnails/ from start
+		#!# Move into import
 		foreach ($paths as $index => $path) {
 			$paths[$index] = preg_replace ('|^/thumbnails|', '', $path);
 		}
 		
 		# Add image store root to the start of each
+		#!# Move into import
 		foreach ($paths as $index => $path) {
 			$paths[$index] = $this->settings['imageStoreRoot'] . $path;
 		}
