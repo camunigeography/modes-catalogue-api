@@ -225,7 +225,6 @@ class import
 					id AS collection,
 					'modes' AS source,
 					`grouping`,
-					NULL AS suppressed,
 					Title AS title,
 					id AS abbreviation,
 					BriefDescription AS introductoryTextBrief,

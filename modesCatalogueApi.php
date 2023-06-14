@@ -177,7 +177,6 @@ class modesCatalogueApi extends frontControllerApplication
 			  `collection` varchar(255) NOT NULL COMMENT 'Indicator used in records',
 			  `source` enum('manual','modes') NOT NULL COMMENT 'Source',
 			  `grouping` enum('museum','picturelibrary','art','archives','Both') DEFAULT NULL,
-			  `suppressed` int DEFAULT NULL COMMENT 'Whether to suppress from public view',
 			  `title` varchar(255) NOT NULL,
 			  `abbreviation` varchar(255) DEFAULT NULL,
 			  `introductoryTextBrief` text NOT NULL,
@@ -303,9 +302,6 @@ class modesCatalogueApi extends frontControllerApplication
 			}
 		}
 		
-		# Determine whether to include suppressed items
-		$includeSuppressed = (isSet ($_GET['includesuppressed']) && $_GET['includesuppressed'] == '1');
-		
 		# Get the collections
 		#!# Get rid of url/baseUrl distinction
 		$query = "SELECT
@@ -315,7 +311,6 @@ class modesCatalogueApi extends frontControllerApplication
 		FROM {$this->settings['database']}.collections
 		WHERE
 			1=1
-			" . ($includeSuppressed ? '' : ' AND (suppressed != 1 OR suppressed IS NULL)') . "
 			" . ($groupings ? ' AND `grouping` IN(' . implode (', ', array_keys ($groupings)) . ')' : '') . "
 		ORDER BY collection
 		;";

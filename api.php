@@ -93,7 +93,6 @@ class api
         "modern": {
             "id": "modern",
             "grouping": "picturelibrary",
-            "suppressed": null,
             "collection": "Modern Photograph Collection",
             "title": "Modern Photograph Collection",
             "abbreviation": "",
@@ -117,12 +116,12 @@ class api
         },
         "are1902-04": {
             "id": "are1902-04",
+            "grouping": "picturelibrary",
+            "collection": "ARE 1902-04",
             "title": "Antarctic Relief Expeditions 1902-04",
             "introductoryTextBrief": "Photographs chronicling the second relief expedition, 1903-04, of the sailing ships \'Morning\' and \'Terra Nova\'.",
             "abbreviation": "ARE 1902-04",
             "source": "modes",
-            "grouping": "picturelibrary",
-            "collection": "ARE 1902-04",
             "sponsorNotice": "",
             "aboutPageHtml": "",
             "categoriesTable": "",
@@ -210,7 +209,6 @@ class api
 {
     "id": "modern",
     "grouping": "picturelibrary",
-    "suppressed": null,
     "collection": "Modern Photograph Collection",
     "title": "Modern Photograph Collection",
     "abbreviation": "",
