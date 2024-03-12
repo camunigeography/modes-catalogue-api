@@ -1,0 +1,17 @@
+{
+    "name": "camunigeography/modes-catalogue-api",
+    "description": "Catalogue API from MODES data",
+    "type": "project",
+    "license": "GPL-3.0-only",
+    "minimum-stability": "stable",
+    "require": {
+        "libpurecontent/frontcontrollerapplication": "^1.13",
+        "libpurecontent/xml": "^1.11",
+        "libpurecontent/image": "^1.4",
+        "libpurecontent/csv": "^1.5",
+        "libpurecontent/application": "^1.9"
+    },
+    "autoload": {
+        "files": ["modesCatalogueApi.php", "api.php", "articleModel.php", "import.php", "reportsController.php"]
+    }
+}

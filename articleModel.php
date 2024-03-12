@@ -275,7 +275,6 @@ class articleModel
 		}
 		
 		# Convert the article XML data to an array
-		require_once ('xml.php');
 		$article = xml::xml2array ($record['data'], false, false, false, false);
 		
 		# Assemble the data

@@ -316,7 +316,6 @@ class api
 		
 		# Get the data
 		ini_set ('display_errors', false);	// #!# Ensure any errors do not disrupt API output
-		require_once ('articleModel.php');
 		$articleModel = new articleModel ($this->modesCatalogueApi, $this->settings, $this->databaseConnection);
 		$data = $articleModel->getArticlesData ($baseUrl, $collectionId, $imageSize, $imageShape, $search, $category, $material, $artist, $requireImages, $random, $page);
 		
@@ -470,7 +469,6 @@ class api
 		
 		# Parse the record data
 		ini_set ('display_errors', false);	// #!# Ensure any errors do not disrupt API output
-		require_once ('articleModel.php');
 		$articleModel = new articleModel ($this->modesCatalogueApi, $this->settings, $this->databaseConnection);
 		$data = $articleModel->getOne ($_GET['id'], $collectionId, $imageSize, $imageShape, $includeXml);
 		
@@ -822,7 +820,6 @@ class api
 		}
 		
 		# Rank is not currently reliable, due to <note> leaf nodes
-		require_once ('xml.php');
 		$dataXml = xml::xml2array ($data['data'], false, $documentToDataOrientatedXml = true, $xmlIsFile = false);
 		//application::dumpData ($dataXml);
 		$data['rank'] = (isSet ($dataXml['Content']['Person']['Rank']['Rank']) ? $dataXml['Content']['Person']['Rank']['Rank'] : $dataXml['Content']['Person']['Rank']);

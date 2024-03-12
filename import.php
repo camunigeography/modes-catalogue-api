@@ -12,10 +12,6 @@ class import
 		$this->baseUrl = $baseUrl;
 		$this->applicationRoot = $applicationRoot;
 		
-		# Load required libraries
-		require_once ('xml.php');
-		require_once ('csv.php');
-		
 	}
 	
 	

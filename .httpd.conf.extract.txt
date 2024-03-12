@@ -3,15 +3,9 @@
 # Load using:
 #	# MODES catalogue viewer
 #	Include /path/to/modes-catalogue-api/.httpd.conf.extract
-#	Use MacroModesCatalogueApi /catalogue "/path/to/site/:/path/to/modes-catalogue-api/:/path/to/php/libraries/:/path/to/php-externallibraries/"
+#	Use MacroModesCatalogueApi /catalogue
 
-
-<Macro MacroModesCatalogueApi $baseUrl $includePath>
-	
-	# Include path
-	<Location $baseUrl>
-		php_value include_path "$includePath"
-	</Location>
+<Macro MacroModesCatalogueApi $baseUrl>
 	
 	# Front controller application support
 	Use MacroFrontControllerApplication "$baseUrl/" "Catalogue API"

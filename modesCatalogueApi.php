@@ -23,7 +23,6 @@ TODO:
 
 
 # Class to present the museum catalogue online
-require_once ('frontControllerApplication.php');
 class modesCatalogueApi extends frontControllerApplication
 {
 	# Function to assign defaults additional to the general application defaults
@@ -451,7 +450,6 @@ class modesCatalogueApi extends frontControllerApplication
 	# Needs privileges: SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, INDEX
 	public function doImport ($modesXmlExportFiles, $type_ignored, &$html)
 	{
-		require_once ('import.php');
 		$import = new import ($this->settings, $this->databaseConnection, $this->baseUrl, $this->applicationRoot);
 		return $import->run ($modesXmlExportFiles, $type_ignored, $html);
 	}
@@ -915,9 +913,6 @@ class modesCatalogueApi extends frontControllerApplication
 			return;
 		}
 		
-		# Load the image library
-		require_once ('image.php');
-		
 		# If the image is already present, serve as-is
 		$thumbnailFile = $this->thumbnailFile ($namespace, $moniker, $index, $size, $shape);
 		if (file_exists ($thumbnailFile)) {
@@ -1026,7 +1021,6 @@ class modesCatalogueApi extends frontControllerApplication
 		
 		# Resize the image
 		ini_set ('max_execution_time', 30);
-		require_once ('image.php');
 		image::resize ($file, 'jpg', $newWidth, $newHeight, $thumbnailFile, $watermarkCallback, true, true, $cropWidth, $cropHeight);
 		
 		# Return success
@@ -1151,7 +1145,6 @@ class modesCatalogueApi extends frontControllerApplication
 	public function reports ($id = false)
 	{
 		# Subclass
-		require_once ('reportsController.php');
 		$reportsController = new reportsController ();
 		echo $reportsController->getHtml ();
 	}
