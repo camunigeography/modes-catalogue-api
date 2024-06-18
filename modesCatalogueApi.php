@@ -144,14 +144,14 @@ class modesCatalogueApi extends frontControllerApplication
 			  `active` enum('','Yes','No') NOT NULL DEFAULT 'Yes' COMMENT 'Currently active?',
 			  `privilege` enum('Administrator','Restricted administrator') NOT NULL DEFAULT 'Administrator' COMMENT 'Administrator level',
 			  PRIMARY KEY (`username`)
-			) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='System administrators';
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='System administrators';
 			
 			-- ARMC categories
 			CREATE TABLE `armcCategories` (
 			  `category` varchar(191) NOT NULL,
 			  `classification` text,
 			  PRIMARY KEY (`category`)
-			) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 			
 			-- Biographies
 			CREATE TABLE `biographies` (
@@ -192,7 +192,7 @@ class modesCatalogueApi extends frontControllerApplication
 			  `imagesSubfolder` varchar(255) DEFAULT NULL COMMENT 'Images subfolder',
 			  `coverImage` varchar(255) DEFAULT NULL COMMENT 'Cover image',
 			  PRIMARY KEY (`id`)
-			) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Table containing overall application configuration for each ';
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Table containing overall application configuration for each ';
 			
 			-- Expeditions
 			CREATE TABLE `expeditions` (
@@ -216,7 +216,7 @@ class modesCatalogueApi extends frontControllerApplication
 			  `PreferredTerm` varchar(255) DEFAULT NULL COMMENT 'Preferred term',
 			  `UseFor` varchar(255) DEFAULT NULL COMMENT 'Use for',
 			  PRIMARY KEY (`Term`)
-			) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Terminology lookups';
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Terminology lookups';
 			
 			-- Records
 			CREATE TABLE `records` (
@@ -247,7 +247,7 @@ class modesCatalogueApi extends frontControllerApplication
 			  `searchSubject` text COMMENT 'Subject',
 			  PRIMARY KEY (`id`),
 			  KEY `Gallery` (`Collection`)
-			) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Records (snapshot date: yymmdd)' ROW_FORMAT=DYNAMIC;
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Records (snapshot date: yymmdd)' ROW_FORMAT=DYNAMIC;
 		";
 	}
 	
