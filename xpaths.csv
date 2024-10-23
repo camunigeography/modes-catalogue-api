@@ -33,7 +33,7 @@ picturelibrary,Artist,NULL
 picturelibrary,CollectionName,Identification/CollectionName
 
 # Biographies
-biographies,name,Content/Person/PersonName
+biographies,name,Content/Person/PersonIdentity
 biographies,date,Content/Person/Dates
 biographies,alias,Content/Person/Alias/Alias
 biographies,rank,Content/Person/Rank
