@@ -693,7 +693,7 @@ class api
 		}
 		
 		# Get the data
-		$fields = array ('id', 'name', 'rank', 'image');
+		$fields = array ('id', 'name', 'date', 'rank', 'image');
 		$data = $this->modesCatalogueApi->getBiographyData ($baseUrl, $collectionId, false, $fields, $imageSize, $baseUrlExpeditions, $random, $forceId);
 		
 		# Return the data, which will be JSON-encoded
