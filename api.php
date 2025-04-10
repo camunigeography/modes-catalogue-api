@@ -696,6 +696,11 @@ class api
 		$fields = array ('id', 'name', 'date', 'rank', 'image');
 		$data = $this->modesCatalogueApi->getBiographyData ($baseUrl, $collectionId, false, $fields, $imageSize, $baseUrlExpeditions, $random, $forceId);
 		
+		# Add a field for name without year clarification suffix, e.g. 'Adams, William (unknown-1890)' => 'Adams, William', but 'Watkins, Henry George (Gino)' stays unamended
+		foreach ($data as $id => $record) {
+			$data[$id]['nameSimplified'] = preg_replace ('/ \(.+-.+\)$/', '', $record['name']);
+		}
+		
 		# Return the data, which will be JSON-encoded
 		return $data;
 	}
