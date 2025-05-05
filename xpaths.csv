@@ -45,10 +45,9 @@ biographies,collection,Administration/Progress/Type[2]
 
 # Expeditions
 #!# Date should be a range
-#!# leader,Association/Person[contains(Role,'xpedition leader')]/PersonName
 expeditions,name,Content/Event/EventIdentity
 expeditions,date,"concat(Content/Event/Date/DateBegin, '-', Content/Event/Date/DateEnd)"
-expeditions,leader,Association/Person[1]/PersonIdentity
+expeditions,leader,Association/Person[Role='expedition leader']/PersonIdentity
 expeditions,about,Content/SummaryText
 expeditions,collection,Administration/Progress/Type[2]
 
