@@ -111,7 +111,7 @@ class import
 		
 		# Confirm the result
 		if ($recordsDone) {
-			$html .= "\n<p>{$this->tick} <strong>Success: " . number_format ($recordsDone) . ' records refreshed / imported into the database.</strong></p>';
+			$html .= "\n<p>" . '<img src="/images/icons/tick.png" alt="Tick" class="icon" /> <strong>Success: ' . number_format ($recordsDone) . ' records refreshed / imported into the database.</strong></p>';
 			$html .= "\n<p>Max memory used: " . round (memory_get_peak_usage (true) / 1048576, 2) . 'MB.</p>';
 			$html .= "\n<p><a href=\"{$this->baseUrl}/import/\">Reset this page.</a></p>";
 		}
