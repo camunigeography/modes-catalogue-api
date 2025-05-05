@@ -40,7 +40,7 @@ biographies,rank,Content/Person/Rank
 biographies,nationality,Content/Person/Nationality
 biographies,awards,Content/Person/Award/Award
 biographies,about,Content/Person/SummaryText
-biographies,image,Reproduction/ReproductionNumber[@elementtype = 'photograph number']/Number
+biographies,image,Reproduction/ReproductionNumber/Number
 biographies,collection,Administration/Progress/Type[2]
 
 # Expeditions
