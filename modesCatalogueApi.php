@@ -670,6 +670,11 @@ class modesCatalogueApi extends frontControllerApplication
 				#!# Check for ($association['Event'][EventType] == 'Antarctic expedition') ?
 				if (!isSet ($association['Event'])) {continue;}
 				$event = $association['Event'];
+				if (!isSet ($event['EventIdentity']) && !isSet ($event['EventType'])) {continue;}	// E.g. Detect biographies with an empty <Association> template block that should be ignored, e.g. for "McLeod, Thomas Frank"
+				if (!isSet ($event['EventIdentity'])) {
+					//echo $data['id']; application::dumpData ($event);		// DEBUG
+					$event['EventIdentity'] = '?';		// Detect cases where the biography has Association/Events/EventType with "Antarctic expedition" but there is no EventIdentity giving the title of the expedition, e.g. for "Nelson, David" and "Williamson, Thomas Soulsby"
+				}
 				$data['expeditions'][] = array (
 					'title' => $event['EventIdentity'],
 					'date' => (isSet ($event['Date']) && is_string ($event['Date']['DateBegin']) ? $event['Date']['DateBegin'] . '-' . $event['Date']['DateEnd'] : NULL),
