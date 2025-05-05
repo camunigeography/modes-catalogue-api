@@ -701,6 +701,13 @@ class api
 			$data[$id]['nameSimplified'] = preg_replace ('/ \(.+-.+\)$/', '', $record['name']);
 		}
 		
+		# Ensure raw data is not sent
+		foreach ($data as $id => $record) {
+			if (array_key_exists ('data', $record)) {
+				unset ($data[$id]['data']);
+			}
+		}
+		
 		# Return the data, which will be JSON-encoded
 		return $data;
 	}
@@ -824,6 +831,8 @@ class api
 			return array ('error' => 'There is no such record ID.');
 		}
 		
+		#!# The following should be in the model, not the API code
+		
 		# Rank is not currently reliable, due to <note> leaf nodes
 		$dataXml = xml::xml2array ($data['data'], false, $documentToDataOrientatedXml = true, $xmlIsFile = false);
 		//application::dumpData ($dataXml);
@@ -836,6 +845,11 @@ class api
 		$alias = $this->modesCatalogueApi->unpipeList ($data['alias']);
 		$alias = array_unique ($alias);
 		$data['alias'] = implode (', ', $alias);
+		
+		# Ensure raw data is not sent
+		if (array_key_exists ('data', $data)) {
+			unset ($data['data']);
+		}
 		
 		# Return the data, which will be JSON-encoded
 		return $data;
@@ -1050,7 +1064,7 @@ class api
 		#!# Need to add support in getBiographyData for getting a list of IDs, to avoid pointless lookup of people not present in the expedition
 		#!# Fields needs to be filterable
 		$biographies = $this->modesCatalogueApi->getBiographyData ($baseUrlPeople, false, $peopleIds, $fields = array (/* 'link', 'image' */), $imageSize);
-		
+			
 		# Extract people
 		$data['people'] = array ();
 		foreach ($metadata['Association']['Person'] as $person) {

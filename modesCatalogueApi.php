@@ -608,7 +608,11 @@ class modesCatalogueApi extends frontControllerApplication
 		}
 		
 		# Ensure full data is included, as it is needed for expedition matching, though it will be deleted below
-		$fields[] = 'data';
+		if ($fields) {		// If filtering ($fields will be empty if getting all fields)
+			if (!in_array ('data', $fields)) {
+				$fields[] = 'data';
+			}
+		}
 		
 		# Get the data or end
 		#!# Should be application-wide in main FCA settings
@@ -683,9 +687,6 @@ class modesCatalogueApi extends frontControllerApplication
 				);
 			}
 		}
-		
-		# Remove raw data
-		unset ($data['data']);
 		
 		# Create a URL
 		$data['link'] = $this->urlFromId ($data['id'], $baseUrl);
