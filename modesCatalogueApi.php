@@ -607,6 +607,9 @@ class modesCatalogueApi extends frontControllerApplication
 			$orderBy = "FIELD(id, '{$forceId}') DESC, " . $orderBy;	// See: https://stackoverflow.com/questions/14104055/ordering-by-specific-field-value-first
 		}
 		
+		# Ensure full data is included, as it is needed for expedition matching, though it will be deleted below
+		$fields[] = 'data';
+		
 		# Get the data or end
 		#!# Should be application-wide in main FCA settings
 		$this->databaseConnection->setStrictWhere (true);
@@ -615,6 +618,7 @@ class modesCatalogueApi extends frontControllerApplication
 		}
 		
 		# Decorate each entry
+		#!# Getting all expeditions will not scale - it is already up to 143k records
 		$expeditionsRaw = $this->getExpeditionData (false, false, false, array ('id', 'name'));
 		if ($id && is_string ($id)) {
 			$data = $this->decorateBiography ($data, $baseUrl, $imageSize, $expeditionsRaw, $baseUrlExpeditions);
@@ -646,7 +650,8 @@ class modesCatalogueApi extends frontControllerApplication
 			$data['awards'] = $this->unpipeList ($data['awards']);
 		}
 		
-		if (isSet ($data['expeditions'])) {
+		# Add expeditions if data supplied
+		if ($expeditionsRaw) {
 			
 			# Unpack the record for metadata extraction
 			$json = json_encode (simplexml_load_string ($data['data']));
@@ -660,6 +665,7 @@ class modesCatalogueApi extends frontControllerApplication
 			}
 			
 			# Extract expeditions
+			$data['expeditions'] = array ();
 			foreach ($metadata['Association'] as $association) {
 				#!# Check for ($association['Event'][EventType] == 'Antarctic expedition') ?
 				if (!isSet ($association['Event'])) {continue;}
@@ -672,6 +678,9 @@ class modesCatalogueApi extends frontControllerApplication
 				);
 			}
 		}
+		
+		# Remove raw data
+		unset ($data['data']);
 		
 		# Create a URL
 		$data['link'] = $this->urlFromId ($data['id'], $baseUrl);
