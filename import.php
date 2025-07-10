@@ -3,6 +3,13 @@
 # Class to handle importing of MODES data to the database
 class import
 {
+	# Properties
+	public $settings;			// Public needed for reportsController
+	public $databaseConnection;	// Public needed for reportsController
+	public $baseUrl;			// Public needed for reportsController
+	private $applicationRoot;
+	
+	
 	# Constructor
 	public function __construct ($settings, $databaseConnection, $baseUrl, $applicationRoot)
 	{
@@ -108,6 +115,10 @@ class import
 			$this->importCollectionLevelRecords ($grouping);
 			$this->importMainRecordsFixups ($grouping);
 		}
+		
+		# Run reports
+		$reportsController = new reportsController ($this);
+		$reportsController->generateData ();
 		
 		# Confirm the result
 		if ($recordsDone) {

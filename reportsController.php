@@ -494,6 +494,59 @@ class reportsController
 		# Convert to CSV
 		csv::serve ($data, $id);
 	}
+	
+	
+	# Function to run the reports
+	public function generateData ()
+	{
+		# Clean out the report results table
+		$this->databaseConnection->truncate ($this->settings['database'], 'reportresults', true);
+		
+		# Run each report and insert the results
+		$reports = $this->getReports ();
+		foreach ($reports as $reportId => $description) {
+			
+			# Skip listing type reports, which implement data handling directly (and optional countability support), and which are handled separately in runListings ()
+			if ($this->isListing ($reportId)) {continue;}
+			
+			# Run the report
+			$result = $this->runReport ($reportId);
+			
+			# Handle errors
+			if ($result === false) {
+				echo "<p class=\"warning\">Error generating report <em>{$reportId}</em>:</p>";
+				echo application::dumpData ($this->databaseConnection->error (), false, true);
+			}
+		}
+	}
+	
+	
+	# Function to run a report
+	private function runReport ($reportId)
+	{
+		# Assemble the query and insert the data
+		$reportFunction = 'report_' . $reportId;
+		$query = $this->reports->$reportFunction ();
+		$query = "INSERT INTO reportresults (report,recordId)\n" . $query . ';';
+		$result = $this->databaseConnection->query ($query);
+		
+		# Return the result
+		return $result;
+	}
+	
+	
+	# Function to run the listing reports
+	private function runListings ()
+	{
+		# Run each listing report
+		$reports = $this->getReports ();
+		foreach ($reports as $reportId => $description) {
+			if ($this->isListing ($reportId)) {
+				$reportFunction = 'report_' . $reportId;
+				$this->reports->$reportFunction ();
+			}
+		}
+	}
 }
 
 ?>
