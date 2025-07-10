@@ -12,6 +12,6 @@
         "libpurecontent/application": "^1.9"
     },
     "autoload": {
-        "files": ["modesCatalogueApi.php", "api.php", "articleModel.php", "import.php", "reportsController.php"]
+        "files": ["modesCatalogueApi.php", "api.php", "articleModel.php", "import.php", "reportsController.php", "reports.php"]
     }
 }

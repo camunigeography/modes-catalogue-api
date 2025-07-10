@@ -2,3 +2,6 @@
 #modescatalogueapi h2.apidocumentation {border-top: 2px solid #ccc; margin-top: 2em; padding-top: 0.7em;}
 #modescatalogueapi h2.apidocumentation a {color: #ccc; font-size: 0.73em;}
 #modescatalogueapi dl.code {padding: 9px; background-color: #f5f5f5; border: 1px solid #ccc; border-radius: 4px;}
+#modescatalogueapi table.reports tr.info td, #modescatalogueapi p#reportskey strong.info {background-color: #eee !important; /* !important necessary for printing background colour */}
+#modescatalogueapi table.reports tr.problem td, #modescatalogueapi p#reportskey strong.problem {background-color: #fcc7c8 !important; /* !important necessary for printing background colour */}
+#modescatalogueapi table.reports tr.ok td, #modescatalogueapi p#reportskey strong.ok {background-color: #e3f9d9 !important; /* !important necessary for printing background colour */}

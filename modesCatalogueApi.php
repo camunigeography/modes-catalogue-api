@@ -109,6 +109,12 @@ class modesCatalogueApi extends frontControllerApplication
 				'icon' => 'asterisk_orange',
 				'administrator' => true,
 			),
+			'reportdownload' => array (
+				'description' => 'Export',
+				'url' => 'reports/',
+				'export' => true,
+				'administrator' => true,
+			),
 			'apidocumentation' => array (
 				'description' => 'API (HTTP)',
 				'url' => 'api/',
@@ -248,6 +254,14 @@ class modesCatalogueApi extends frontControllerApplication
 			  PRIMARY KEY (`id`),
 			  KEY `Gallery` (`Collection`)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Records (snapshot date: yymmdd)' ROW_FORMAT=DYNAMIC;
+			
+			-- Reports
+			CREATE TABLE `reportresults` (
+			  `id` int NOT NULL AUTO_INCREMENT COMMENT 'Automatic key',
+			  `report` varchar(40) NOT NULL COMMENT 'Report type',
+			  `recordId` varchar(255) NOT NULL COMMENT 'Record number',
+			  PRIMARY KEY (`id`)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Results table';
 		";
 	}
 	
@@ -1160,8 +1174,17 @@ class modesCatalogueApi extends frontControllerApplication
 	public function reports ($id = false)
 	{
 		# Subclass
-		$reportsController = new reportsController ();
+		$reportsController = new reportsController ($this);
+		$reportsController->createPage ($id);
 		echo $reportsController->getHtml ();
+	}
+	
+	
+	# Function to export a report download
+	public function reportdownload ($id)
+	{
+		$reportsController = new reportsController ($this);
+		$reportsController->reportCsv ($id);
 	}
 }
 

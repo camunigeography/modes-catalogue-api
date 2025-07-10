@@ -11,8 +11,8 @@
 	Use MacroFrontControllerApplication "$baseUrl/" "Catalogue API"
 	
 	# Page routing
-	RewriteRule ^$baseUrl/(reports)/$ $baseUrl/index.html?action=$1 [L,QSA]
-	RewriteRule ^$baseUrl/(reports)$ $baseUrl/$1/ [L,R]
+	RewriteRule ^$baseUrl/(search|reports)/$ $baseUrl/index.html?action=$1 [L,QSA]
+	RewriteRule ^$baseUrl/(search|reports)$ $baseUrl/$1/ [L,R]
 	RewriteRule ^$baseUrl/(reports)/([a-z0-9]+)/$ $baseUrl/index.html?action=$1&item=$2 [L,QSA]
 	RewriteRule ^$baseUrl/(reports)/([a-z0-9]+)/page([0-9]+).html$ $baseUrl/index.html?action=$1&item=$2&page=$3 [L,QSA]
 	RewriteRule ^$baseUrl/(reports)/([a-z0-9]+)$ $baseUrl/$1/$2/ [R]
@@ -41,5 +41,13 @@
 		php_value post_max_size 1000M
 		php_value memory_limit 1000M
 	</Location>
+	
+	# Reports
+	# NB \1 is a backreference in the test
+	RewriteRule ^$baseUrl/reports/([a-z0-9]+)/\1.csv$ $baseUrl/index.html?action=reportdownload&item=$1 [L,QSA]
+	<LocationMatch ^$baseUrl/reports/([a-z0-9]+)/\1.csv$>
+		php_value auto_prepend_file none
+		php_value auto_append_file none
+	</LocationMatch>
 	
 </Macro>
