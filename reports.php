@@ -11,6 +11,7 @@ class reports
 	
 	# Define the registry of reports; those prefixed with 'listing_' return data rather than record numbers; listings can be suffixed with a status (e.g. _info)
 	private $reportsList = array (
+		'pathlessimages_problem' => 'Images without a full, explicit path',
 	);
 	
 	# Listing (values) reports
@@ -42,6 +43,25 @@ class reports
 	public function getListingsList ()
 	{
 		return $this->listingsList;
+	}
+	
+	
+	# Naming report
+	public function report_pathlessimages ()
+	{
+		# Define the query
+		$query = "
+			SELECT
+				'pathlessimages' AS report,
+				id AS recordId
+			FROM records
+			WHERE
+				    photographFilename IS NOT NULL
+				AND PhotographFilename NOT LIKE 'X:%'
+		";
+		
+		# Return the query
+		return $query;
 	}
 	
 	
