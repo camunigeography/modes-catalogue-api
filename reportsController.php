@@ -305,7 +305,7 @@ class reportsController
 	
 	
 	# Function to create a record listing based on a query, with pagination
-	public function recordListing ($id, $query, $preparedStatementValues = array (), $baseLink, $listingIsProblemType = false, $queryString = false, $view = 'listing' /* listing/record/table */, $tableViewTable = false, $knownTotalAvailable = false, $entityName = 'record', $orderingControlsHtml = false)
+	public function recordListing ($id, $query, $preparedStatementValues, $baseLink, $listingIsProblemType = false, $queryString = false, $view = 'listing' /* listing/record/table */, $tableViewTable = false, $knownTotalAvailable = false, $entityName = 'record', $orderingControlsHtml = false)
 	{
 		# Assemble the query, determining whether to use $id or $query
 		if ($id) {
