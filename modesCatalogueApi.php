@@ -25,6 +25,10 @@ TODO:
 # Class to present the museum catalogue online
 class modesCatalogueApi extends frontControllerApplication
 {
+	# Class properties
+	public $applicationRoot;
+	
+
 	# Function to assign defaults additional to the general application defaults
 	public function defaults ()
 	{
