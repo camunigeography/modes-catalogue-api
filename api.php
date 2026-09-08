@@ -279,7 +279,7 @@ class api
 			$search = $_GET['search'];
 		};
 		
-		# Ensure either a collection or a search`	 has been specified
+		# Ensure either a collection or a search has been specified
 		if (!$collectionId && !$search) {
 			return array ('error' => 'At least a collection or a search phrase must be specified.');
 		}
@@ -1071,7 +1071,7 @@ class api
 			$name = $person['PersonIdentity'];
 			$data['people'][] = array (
 				'name' => $name,
-				'role' => $person['Role'],
+				'role' => (is_array ($person['Role']) ? implode ('; ', $person['Role']) : $person['Role']),		// Normally string, may be a list
 				'link' => (isSet ($biographies[$name]) ? $biographies[$name]['link'] : '#'),		// If missing, # will be used, which indicates a data error
 				'image' => (isSet ($biographies[$name]) ? $biographies[$name]['image'] : '#'),		// If missing, # will be used, which indicates a data error
 			);
