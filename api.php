@@ -1071,7 +1071,7 @@ class api
 			$name = $person['PersonIdentity'];
 			$data['people'][] = array (
 				'name' => $name,
-				'role' => (is_array ($person['Role']) ? implode ('; ', $person['Role']) : $person['Role']),		// Normally string, may be a list
+				'role' => mb_ucfirst ((is_array ($person['Role']) ? implode ('; ', $person['Role']) : $person['Role'])),		// Normally string, may be a list
 				'link' => (isSet ($biographies[$name]) ? $biographies[$name]['link'] : '#'),		// If missing, # will be used, which indicates a data error
 				'image' => (isSet ($biographies[$name]) ? $biographies[$name]['image'] : '#'),		// If missing, # will be used, which indicates a data error
 			);
