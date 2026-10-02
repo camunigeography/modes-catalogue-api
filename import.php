@@ -86,7 +86,7 @@ class import
 		foreach ($records as $key => $record) {
 			if (!$this->databaseConnection->insert ($this->settings['database'], $table, $record, true)) {
 				$html .= "\n<p class=\"warning\">ERROR: There was a problem inserting the record into the database. MySQL said:</p>";
-				$html .= application::dumpData ($this->databaseConnection->error (), false, $return = true);
+				$html .= application::dumpData ($this->databaseConnection->error (), $return = true);
 				return false;
 			}
 		}

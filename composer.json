@@ -9,7 +9,7 @@
         "libpurecontent/xml": "^1.11",
         "libpurecontent/image": "^1.4",
         "libpurecontent/csv": "^1.6",
-        "libpurecontent/application": "^1.9"
+        "libpurecontent/application": "^1.10"
     },
     "autoload": {
         "files": ["modesCatalogueApi.php", "api.php", "articleModel.php", "import.php", "reportsController.php", "reports.php"]

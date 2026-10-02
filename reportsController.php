@@ -515,7 +515,7 @@ class reportsController
 			# Handle errors
 			if ($result === false) {
 				echo "<p class=\"warning\">Error generating report <em>{$reportId}</em>:</p>";
-				echo application::dumpData ($this->databaseConnection->error (), false, true);
+				echo application::dumpData ($this->databaseConnection->error (), true);
 			}
 		}
 	}
