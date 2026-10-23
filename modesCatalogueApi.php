@@ -462,7 +462,7 @@ class modesCatalogueApi extends frontControllerApplication
 		$fileCreationInstructionsHtml = '<p>Use the export facility in MODES, and save the file somewhere on your computer. Note that this can take a while to create.</p>';
 		
 		# Run the import UI
-		$this->importUi ($this->settings['importFiles'], $importTypes, $fileCreationInstructionsHtml);
+		echo $this->importUi ($this->settings['importFiles'], $importTypes, $fileCreationInstructionsHtml);
 	}
 	
 	
