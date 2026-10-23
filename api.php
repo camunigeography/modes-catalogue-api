@@ -3,6 +3,14 @@
 # API
 class api
 {
+	# Class properties
+	private $modesCatalogueApi;
+	private $settings;
+	private $databaseConnection;
+	private $baseUrl;
+	
+	
+	
 	# Constructor
 	public function __construct ($modesCatalogueApi, $settings, $databaseConnection, $baseUrl)
 	{

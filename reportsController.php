@@ -11,6 +11,8 @@ class reportsController
 	private $reportsList;
 	private $listingsList;
 	private $html;
+	private $countableListings;
+	private $reportStatuses;
 	
 	
 	# Contructor to list the reports
