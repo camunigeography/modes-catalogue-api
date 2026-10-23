@@ -5,10 +5,10 @@
     "license": "GPL-3.0-only",
     "minimum-stability": "stable",
     "require": {
-        "libpurecontent/frontcontrollerapplication": "^1.14",
+        "libpurecontent/frontcontrollerapplication": "^1.20",
         "libpurecontent/xml": "^1.11",
-        "libpurecontent/image": "^1.4",
-        "libpurecontent/csv": "^1.6",
+        "libpurecontent/image": "^1.5",
+        "libpurecontent/csv": "^1.8",
         "libpurecontent/application": "^1.10"
     },
     "autoload": {
