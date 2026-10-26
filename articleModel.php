@@ -275,7 +275,7 @@ class articleModel
 		}
 		
 		# Convert the article XML data to an array
-		$article = xml::xml2array ($record['data'], false, false, false, false);
+		$article = xml::xml2array ($record['data'], false, $documentToDataOrientatedXml = false, $xmlIsFile = false);
 		
 		# Assemble the data
 		foreach ($this->sections as $section) {
