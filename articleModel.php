@@ -637,6 +637,13 @@ class articleModel
 				$material['Keyword'] = array ($material['Keyword']);
 			}
 			
+			# Flatten data structure of any keywords that have nested notes data, removing the note
+			foreach ($material['Keyword'] as $index => $keyword) {
+				if (is_array ($keyword) && isSet ($keyword['Keyword']) && isSet ($keyword['Note'])) {
+					$material['Keyword'][$index] = $keyword['Keyword'];
+				}
+			}
+			
 			# Trim each Keyword
 			foreach ($material['Keyword'] as $index => $keyword) {
 				$material['Keyword'][$index] = trim ($keyword);
