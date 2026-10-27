@@ -670,6 +670,9 @@ class articleModel
 			
 			# Add on Part if present
 			if (isSet ($material['Note'])) {
+				if (is_array ($material['Note']) && isSet ($material['Note']['Note'])) {	// Flatten nested if needed
+					$material['Note'] = $material['Note']['Note'];
+				}
 				$part = trim ($material['Note']);
 				$materialString .= " ({$part})";
 			}
