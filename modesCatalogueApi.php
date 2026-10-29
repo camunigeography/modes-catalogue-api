@@ -29,6 +29,7 @@ class modesCatalogueApi extends frontControllerApplication
 	public $settings;
 	public $databaseConnection;
 	public $baseUrl;
+	public $applicationRoot;
 	
 
 	# Function to assign defaults additional to the general application defaults
